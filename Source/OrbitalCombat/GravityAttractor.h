@@ -23,6 +23,6 @@ public:
 
 	void RotateToSurface(AActor* body);
 	void RotateMeshToSurface(UStaticMeshComponent * mesh);
-	void Attract(AActor * body, float deltaTime);
+	void Attract(AActor * body, float deltaTime, bool *bGrounded = nullptr);
 	void AttractMesh(UStaticMeshComponent * mesh, float deltaTime, bool *bGrounded = nullptr);
 };

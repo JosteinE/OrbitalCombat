@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Projectile.h"
 #include "PlayerCharacterController.generated.h"
 
 UCLASS()
@@ -18,7 +19,6 @@ protected:
 
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
-	FVector lastMouseLoc;
 
 	bool bJumping{ false };
 
@@ -48,5 +48,5 @@ protected:
 	void moveForward(float inputAxis);
 	void moveRight(float inputAxis);
 	void jump();
-	void stopJump();
+	void leftMouseButton();
 };

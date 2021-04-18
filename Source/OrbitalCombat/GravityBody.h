@@ -28,6 +28,8 @@ public:
 
 	UGravityAttractor* planetAttractor{ nullptr };
 
+	void rotateToSurface();
+	void pullToSurface(float deltaTime, bool * bGrounded = nullptr);
 	void rotateMeshToSurface();
 	void pullMeshToSurface(float deltaTime, bool * bGrounded = nullptr); //Applies gravity
 };

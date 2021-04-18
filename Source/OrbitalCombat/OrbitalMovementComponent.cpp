@@ -17,7 +17,7 @@ void UOrbitalMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	meshComponent = Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent();
+	//meshComponent = Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent();
 }
 
 
@@ -27,34 +27,34 @@ void UOrbitalMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Rotate mesh to face surface
-	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->rotateMeshToSurface();
+	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->rotateToSurface();
 
 	// Pull mesh towards the main planet, also detecting collision
-	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->pullMeshToSurface(DeltaTime, &bGrounded);
+	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->pullToSurface(DeltaTime, &bGrounded);
 }
 
 void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, float deltaTime)
 {
 	FVector moveDirection;
 	if (input.X != 0)
-		moveDirection += meshComponent->GetRightVector() * input.X;
+		moveDirection += GetPawnOwner()->GetActorRightVector() * input.X;
 
 	if (input.Y != 0)
-		moveDirection += meshComponent->GetForwardVector() * input.Y;
+		moveDirection += GetPawnOwner()->GetActorForwardVector() * input.Y;
 
 	moveDirection.Normalize();
 
 	//UE_LOG(LogTemp, Warning, TEXT("MoveDirection { %f, %f, %f }"), moveDirection.X, moveDirection.Y, moveDirection.Z);
 	//meshComponent->SetPhysicsLinearVelocity(moveDirection * speed * deltaTime, true);
-	meshComponent->SetWorldLocation(meshComponent->GetComponentLocation() + moveDirection * moveSpeed * deltaTime, false);
+	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
 }
 
 void UOrbitalMovementComponent::jump()
 {
 	if (bGrounded)
 	{
-		meshComponent->SetPhysicsLinearVelocity(meshComponent->GetUpVector() * jumpForce, true);
-		UE_LOG(LogTemp, Warning, TEXT("GetUpVector: { %f, %f, %f }"), meshComponent->GetUpVector().X, meshComponent->GetUpVector().Y, meshComponent->GetUpVector().Z);
+		Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->SetPhysicsLinearVelocity(Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->GetUpVector() * jumpForce, true);
+		//UE_LOG(LogTemp, Warning, TEXT("GetUpVector: { %f, %f, %f }"), meshComponent->GetUpVector().X, meshComponent->GetUpVector().Y, meshComponent->GetUpVector().Z);
 	}
 }
 

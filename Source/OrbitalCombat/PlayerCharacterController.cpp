@@ -19,7 +19,7 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	//Face the character in the direction of the cursors location
-	//faceCursorLocation();
+	faceCursorLocation();
 
 	if (directionInput.X != 0 || directionInput.Y != 0 || directionInput.Z != 0)
 		directionInputToMovement(DeltaTime);
@@ -40,23 +40,18 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacterController::moveRight);
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacterController::jump);
+	InputComponent->BindAction("LMB", IE_Pressed, this, &APlayerCharacterController::leftMouseButton);
 }
 
 void APlayerCharacterController::faceCursorLocation()
 {
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
-
-	if (Hit.ImpactPoint.X != lastMouseLoc.X || Hit.ImpactPoint.Y != lastMouseLoc.Y || Hit.ImpactPoint.Z != lastMouseLoc.Z)
-	{
-		FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), Hit.ImpactPoint);
-		NewRotation.Pitch = 0;
-		NewRotation.Roll = 0;
-		Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetRelativeRotation(NewRotation);
-		UE_LOG(LogTemp, Warning, TEXT("cursorLocation: %f, %f, %f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
-		//UE_LOG(LogTemp, Warning, TEXT("cursor collided with: %s"), *Hit.GetActor()->GetActorLabel());
-		lastMouseLoc = FVector{ Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z };
-	}
+	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), Hit.ImpactPoint);
+	NewRotation.Pitch = 0;
+	NewRotation.Roll = 0;
+	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetRelativeRotation(NewRotation);
+	UE_LOG(LogTemp, Warning, TEXT("cursorLocation: %f, %f, %f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
 }
 
 
@@ -115,6 +110,30 @@ void APlayerCharacterController::jump()
 {
 	bJumping = true;
 	UE_LOG(LogTemp, Warning, TEXT("JumpPressed"));
+}
+
+void APlayerCharacterController::leftMouseButton()
+{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Owner = this;
+		spawnParams.Instigator = GetInstigator();
+
+		FVector projectileSpawnLoc = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
+		projectileSpawnLoc.Normalize();
+		projectileSpawnLoc *= 2;
+		projectileSpawnLoc += GetPawn()->GetActorLocation();
+
+		FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
+
+		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
+
+		if (projectile)
+		{
+			// Set the projectile's initial trajectory.
+			FVector LaunchDirection = projectileSpawnRot.Vector();
+			projectile->FireInDirection(LaunchDirection);
+			UE_LOG(LogTemp, Warning, TEXT("Firing!"));
+		}
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)

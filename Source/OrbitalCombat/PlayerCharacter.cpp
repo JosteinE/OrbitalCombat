@@ -10,26 +10,26 @@
 
 APlayerCharacter::APlayerCharacter()
 {
-	// Create a mesh for the player
-	staticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-	staticMeshComponent->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	staticMeshComponent->SetEnableGravity(false);
-	staticMeshComponent->SetSimulatePhysics(true);
-	staticMeshComponent->SetLinearDamping(0.3f);
-	staticMeshComponent->SetAngularDamping(500.f);
-	RootComponent = staticMeshComponent;
-	//staticMeshComponent->SetupAttachment(RootComponent);
-
-	// Create a movement component for the pawn
-	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");
-
 	// Set size for player capsule
 	playerCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
 	playerCapsuleComponent->InitCapsuleSize(50.f, 50.0f);
 	playerCapsuleComponent->SetEnableGravity(false);
 	playerCapsuleComponent->SetCollisionProfileName("Pawn");
-	playerCapsuleComponent->SetupAttachment(RootComponent);
-	//RootComponent = playerCapsuleComponent;
+	//playerCapsuleComponent->SetupAttachment(RootComponent);
+	RootComponent = playerCapsuleComponent;
+
+	// Create a mesh for the player
+	staticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+	staticMeshComponent->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
+	staticMeshComponent->SetEnableGravity(false);
+	//staticMeshComponent->SetSimulatePhysics(true);
+	//staticMeshComponent->SetLinearDamping(0.3f);
+	//staticMeshComponent->SetAngularDamping(500.f);
+	//RootComponent = staticMeshComponent;
+	staticMeshComponent->SetupAttachment(RootComponent);
+
+	// Create a movement component for the pawn
+	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");
 
 	//// Don't rotate character to camera direction
 	//bUseControllerRotationPitch = false;
@@ -75,7 +75,7 @@ APlayerCharacter::APlayerCharacter()
 	cursorPlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>("cursorPlaneMeshComponent");
 	//UStaticMesh* planeMesh = ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Plane.Plane'")).Object;
 	cursorPlaneMesh->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Plane.Plane'")).Object);
-	cursorPlaneMesh->SetWorldScale3D(FVector{ 10.f, 10.f, 1.f });
+	cursorPlaneMesh->SetWorldScale3D(FVector{ 15.f, 30.f, 1.f });
 	cursorPlaneMesh->SetCollisionProfileName("CursorCollider");
 	cursorPlaneMesh->SetEnableGravity(false);
 	cursorPlaneMesh->SetCastShadow(false);

@@ -63,6 +63,16 @@ void UGravityBody::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	//}
 }
 
+void UGravityBody::rotateToSurface()
+{
+	planetAttractor->RotateToSurface(GetOwner());
+}
+
+void UGravityBody::pullToSurface(float deltaTime, bool * bGrounded)
+{
+	planetAttractor->Attract(GetOwner(), deltaTime, bGrounded);
+}
+
 void UGravityBody::rotateMeshToSurface()
 {
 	planetAttractor->RotateMeshToSurface(GetOwner()->FindComponentByClass<UStaticMeshComponent>());

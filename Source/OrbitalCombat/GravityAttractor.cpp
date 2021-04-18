@@ -31,15 +31,29 @@ void UGravityAttractor::RotateMeshToSurface(UStaticMeshComponent * mesh)
 	mesh->SetRelativeRotation(UKismetMathLibrary::MakeRotFromZX(newForwardVector, mesh->GetForwardVector()));
 }
 
-void UGravityAttractor::Attract(AActor * body, float deltaTime)
+void UGravityAttractor::Attract(AActor * body, float deltaTime, bool *bGrounded)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Current Distance: %f"), FVector::Distance(GetOwner()->GetActorLocation(), body->GetActorLocation()));
-	//FVector pullDirection{ GetOwner()->GetActorUpVector() * -gravity };
-	//pullDirection.Normalize();
+	FVector pullDirection{ -body->GetActorUpVector() };
+	pullDirection.Normalize();
 
-	//body->SetActorLocation(UKismetMathLibrary::VInterpTo(body->GetActorLocation(), -GetOwner()->GetActorUpVector(), deltaTime, gravity));
-	//if(Cast<APlayerCharacter>(body).get
-	//body->FindComponentByClass<UPawnMovementComponent>()->AddInputVector(-body->GetActorUpVector() * gravity);
+	if (bGrounded != nullptr)
+	{
+		FHitResult bColliding; // To log the hit result
+		body->SetActorLocation(body->GetActorLocation() + pullDirection * gravity, true, &bColliding);
+
+		if (bColliding.bBlockingHit)
+		{
+			*bGrounded = true;
+		}
+		else
+		{
+			*bGrounded = false;
+		}
+	}
+	else
+	{
+		body->SetActorLocation(body->GetActorLocation() + pullDirection * gravity, true);
+	}
 }
 
 void UGravityAttractor::AttractMesh(UStaticMeshComponent * mesh, float deltaTime, bool *bGrounded)

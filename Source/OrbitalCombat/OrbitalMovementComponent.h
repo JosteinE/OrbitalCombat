@@ -38,5 +38,5 @@ public:
 
 private:
 	
-	UStaticMeshComponent* meshComponent;		
+	//UStaticMeshComponent* meshComponent;		
 };
