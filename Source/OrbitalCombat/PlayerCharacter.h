@@ -66,7 +66,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UOrbitalMovementComponent* movementComponent;
 
-	/** Gravity body - pulls owner towards a target */
+	/** Gravity body - Rotates (and pulls) owner towards a target */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UGravityBody *gravityBody;
 

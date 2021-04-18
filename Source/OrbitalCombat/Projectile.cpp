@@ -24,17 +24,14 @@ AProjectile::AProjectile()
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
-	if (!ProjectileMovementComponent)
+	if (!projectileMovementComponent)
 	{
 		// Use this component to drive this projectile's movement.
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		ProjectileMovementComponent->InitialSpeed = 3000.0f;
-		ProjectileMovementComponent->MaxSpeed = 3000.0f;
-		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = true;
-		ProjectileMovementComponent->Bounciness = 0.3f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+		projectileMovementComponent = CreateDefaultSubobject<UOrbitalProjectileMovementComp>(TEXT("ProjectileMovementComponent"));
+		//projectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		projectileMovementComponent->InitialSpeed = 600.0f;
+		projectileMovementComponent->MaxSpeed = 600.0f;
+		projectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
 	if (!staticMeshComponent)
 	{
@@ -43,6 +40,9 @@ AProjectile::AProjectile()
 		staticMeshComponent->SetupAttachment(RootComponent);
 		staticMeshComponent->SetEnableGravity(false);
 	}
+	if (!gravityBody)
+		gravityBody = CreateDefaultSubobject<UGravityBody>("GravityBody");
+	
 
 	InitialLifeSpan = 3.0f; // Destroy projectile after X seconds
 }
@@ -59,10 +59,17 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Rotate mesh to face surface
+	GetGravityBody()->rotateToSurface();
+
+	// Pull mesh towards the main planet, also detecting collision
+	GetGravityBody()->pullToSurface(DeltaTime);
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
 void AProjectile::FireInDirection(const FVector& ShootDirection)
 {
-	ProjectileMovementComponent->Velocity = ShootDirection * ProjectileMovementComponent->InitialSpeed;
+	projectileDirection = ShootDirection;
+	projectileDirection.Normalize();
+	//projectileMovementComponent->Velocity = ShootDirection * projectileMovementComponent->InitialSpeed;
 }

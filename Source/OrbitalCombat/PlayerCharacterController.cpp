@@ -51,7 +51,7 @@ void APlayerCharacterController::faceCursorLocation()
 	NewRotation.Pitch = 0;
 	NewRotation.Roll = 0;
 	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetRelativeRotation(NewRotation);
-	UE_LOG(LogTemp, Warning, TEXT("cursorLocation: %f, %f, %f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
+	//UE_LOG(LogTemp, Warning, TEXT("cursorLocation: %f, %f, %f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
 }
 
 
@@ -126,7 +126,7 @@ void APlayerCharacterController::leftMouseButton()
 		FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
 
 		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-
+		projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet);
 		if (projectile)
 		{
 			// Set the projectile's initial trajectory.

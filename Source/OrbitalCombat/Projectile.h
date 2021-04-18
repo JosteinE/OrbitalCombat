@@ -5,7 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
+#include "OrbitalProjectileMovementComp.h"
+#include "GravityBody.h"
 #include "Projectile.generated.h"
 
 UCLASS()
@@ -25,18 +26,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	/** Returns the movementComponent subobject **/
+	FORCEINLINE class UOrbitalProjectileMovementComp* GetMovementComponent() { return projectileMovementComponent; }
+	/** Returns the gravityBody subobject **/
+	FORCEINLINE class UGravityBody* GetGravityBody() { return gravityBody; }
+
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
 
 	// Projectile movement component.
 	UPROPERTY(VisibleAnywhere, Category = Movement)
-	UProjectileMovementComponent* ProjectileMovementComponent;
+	UOrbitalProjectileMovementComp* projectileMovementComponent;
 
 	// Mesh Component
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class UStaticMeshComponent* staticMeshComponent;
 
+	/** Gravity body - Rotates (and pulls) owner towards a target */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UGravityBody *gravityBody;
+
+	FVector projectileDirection;
 	// Function that initializes the projectile's velocity in the shoot direction.
 	void FireInDirection(const FVector& ShootDirection);
 };

@@ -26,8 +26,7 @@ void UGravityBody::BeginPlay()
 			AActor * planetCheck = *AActorItr;
 			if (planetCheck->GetActorLabel() == "MainPlanet")
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Planet assigned"));
-				planet = planetCheck;
+				setPlanetToOrbit(planetCheck);
 				break;
 			}
 		}
@@ -61,6 +60,14 @@ void UGravityBody::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 	//{
 	//	//UE_LOG(LogTemp, Warning, TEXT("Stopping play as no planet were assigned to the GravityBody component"));
 	//}
+}
+
+void UGravityBody::setPlanetToOrbit(AActor * inPlanet)
+{
+	if (inPlanet)
+		planet = inPlanet;
+	else
+		UE_LOG(LogTemp, Warning, TEXT("Attempted to assign a nullptr as planet in a GravityBody component."));
 }
 
 void UGravityBody::rotateToSurface()
