@@ -13,6 +13,10 @@ UGravityBody::UGravityBody()
 	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
+UGravityBody::~UGravityBody()
+{
+}
+
 // Called when the game starts
 void UGravityBody::BeginPlay()
 {

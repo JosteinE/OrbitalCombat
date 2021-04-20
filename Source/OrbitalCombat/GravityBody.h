@@ -15,6 +15,7 @@ class ORBITALCOMBAT_API UGravityBody : public UActorComponent
 
 protected:
 	UGravityBody();
+	~UGravityBody();
 
 	// Called when the game starts
 	virtual void BeginPlay() override;

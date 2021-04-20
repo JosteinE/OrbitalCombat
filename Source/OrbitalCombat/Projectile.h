@@ -26,6 +26,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	float distanceFromPlanet;
+	float projectileSpeed = 250.f;
+
 	/** Returns the movementComponent subobject **/
 	FORCEINLINE class UOrbitalProjectileMovementComp* GetMovementComponent() { return projectileMovementComponent; }
 	/** Returns the gravityBody subobject **/
