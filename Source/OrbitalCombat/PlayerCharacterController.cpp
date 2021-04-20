@@ -8,6 +8,8 @@
 #include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "DrawDebugHelpers.h"
+
 APlayerCharacterController::APlayerCharacterController()
 {
 	bShowMouseCursor = true;
@@ -25,7 +27,11 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 		directionInputToMovement(DeltaTime);
 	if (bJumping)
 		jumpInputToMovement();
-
+	if (bLMB)
+	{
+		fire();
+		bLMB = false;
+	}
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -47,11 +53,15 @@ void APlayerCharacterController::faceCursorLocation()
 {
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
-	FRotator NewRotation = UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), Hit.ImpactPoint);
-	NewRotation.Pitch = 0;
-	NewRotation.Roll = 0;
-	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetRelativeRotation(NewRotation);
-	//UE_LOG(LogTemp, Warning, TEXT("cursorLocation: %f, %f, %f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
+	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
+}
+
+void APlayerCharacterController::drawForwardDebugLine()
+{
+	FVector forwardVector = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
+	forwardVector.Normalize();
+	forwardVector *= 500.f;
+	DrawDebugLine(GetWorld(), GetPawn()->GetActorLocation(), GetPawn()->GetActorLocation() + forwardVector, FColor::Red, true, 5.f);
 }
 
 
@@ -114,26 +124,32 @@ void APlayerCharacterController::jump()
 
 void APlayerCharacterController::leftMouseButton()
 {
-		FActorSpawnParameters spawnParams;
-		spawnParams.Owner = this;
-		spawnParams.Instigator = GetInstigator();
+	bLMB = true;
+}
 
-		FVector projectileSpawnLoc = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
-		projectileSpawnLoc.Normalize();
-		projectileSpawnLoc *= 2;
-		projectileSpawnLoc += GetPawn()->GetActorLocation();
+void APlayerCharacterController::fire()
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = this;
+	spawnParams.Instigator = GetInstigator();
 
-		FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
+	FVector projectileSpawnLoc = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
+	projectileSpawnLoc.Normalize();
+	projectileSpawnLoc *= 2;
+	projectileSpawnLoc += GetPawn()->GetActorLocation();
 
-		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-		projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet);
-		if (projectile)
-		{
-			// Set the projectile's initial trajectory.
-			FVector LaunchDirection = projectileSpawnRot.Vector();
-			projectile->FireInDirection(LaunchDirection);
-			UE_LOG(LogTemp, Warning, TEXT("Firing!"));
-		}
+	FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
+
+	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
+
+	projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet);
+	if (projectile)
+	{
+		//// Set the projectile's initial trajectory.
+		//FVector LaunchDirection = projectileSpawnRot.Vector();
+		//projectile->FireInDirection(LaunchDirection);
+		UE_LOG(LogTemp, Warning, TEXT("Firing!"));
+	}
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)

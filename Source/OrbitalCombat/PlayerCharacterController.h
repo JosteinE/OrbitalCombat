@@ -21,6 +21,7 @@ protected:
 	FVector directionInput{ 0,0,0 };
 
 	bool bJumping{ false };
+	bool bLMB{ false };
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
@@ -28,6 +29,7 @@ protected:
 	// End PlayerController interface
 
 	void faceCursorLocation();
+	void drawForwardDebugLine();
 
 	/** Navigate player to the current mouse cursor location. */
 	//void MoveToMouseCursor();
@@ -49,4 +51,5 @@ protected:
 	void moveRight(float inputAxis);
 	void jump();
 	void leftMouseButton();
+	void fire();
 };

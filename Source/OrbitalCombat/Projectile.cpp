@@ -3,7 +3,6 @@
 
 #include "Projectile.h"
 #include "UObject/ConstructorHelpers.h"
-#include "Math/UnrealMathUtility.h"
 #include "Components/StaticMeshComponent.h"
 
 // Sets default values
@@ -55,7 +54,8 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	distanceFromPlanet = 250.f * GetGravityBody()->planet->GetActorScale().X + GetActorScale().X; //the radius of the planet is by default 250
+	//distanceFromPlanet = 250.f * GetGravityBody()->planet->GetActorScale().X + GetActorScale().X; //the radius of the planet is by default 250
+	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
 // Called every frame
@@ -63,18 +63,9 @@ void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Rotate mesh to face surface
-	//GetGravityBody()->rotateToSurface();
-
-	// Pull mesh towards the main planet, also detecting collision
-	//FVector moveDirection = GetActorForwardVector();
-	//moveDirection.Normalize();
-	//moveDirection = GetActorLocation() + moveDirection * projectileMovementComponent->InitialSpeed * DeltaTime;
 	SetActorLocation(GetGravityBody()->planet->GetActorLocation());
 	AddActorLocalRotation(FRotator{ -projectileSpeed * DeltaTime, 0, 0 });
 	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet);
-	//UE_LOG(LogTemp, Warning, TEXT("UpVector: { %f, %f, %f }"), GetActorUpVector().X, GetActorUpVector().Y, GetActorUpVector().Z);
-	//UE_LOG(LogTemp, Warning, TEXT("distanceFromPlanet: %f"), distanceFromPlanet);
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.
