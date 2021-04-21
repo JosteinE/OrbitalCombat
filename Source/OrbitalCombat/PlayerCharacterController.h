@@ -13,15 +13,24 @@ class APlayerCharacterController : public APlayerController
 public:
 	APlayerCharacterController();
 
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsMoving{ false };
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsRunning{ false };
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bJumping{ false };
+
+	UPROPERTY(BlueprintReadOnly)
+	bool bLMB{ false };
+
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	//uint32 bMoveToMouseCursor : 1;
 
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
-
-	bool bJumping{ false };
-	bool bLMB{ false };
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
@@ -51,5 +60,8 @@ protected:
 	void moveRight(float inputAxis);
 	void jump();
 	void leftMouseButton();
+	void leftMouseButtonReleased();
+	void startRunning();
+	void stopRunning();
 	void fire();
 };

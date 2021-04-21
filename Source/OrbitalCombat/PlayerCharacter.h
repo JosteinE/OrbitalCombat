@@ -51,7 +51,7 @@ private:
 		class USpringArmComponent* cameraBoom;
 
 	/** The players collision detector. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = collisionComponent, meta = (AllowPrivateAccess = "true"))
 		class UCapsuleComponent* playerCapsuleComponent;
 
 	///** A decal that projects to the cursor location. */
@@ -59,19 +59,19 @@ private:
 	//	class UDecalComponent* cursorToWorld;
 
 	/** Mesh that represents the player */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = staticMesh, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* staticMeshComponent;
 
 	/** Movement controller for the player */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = movementComponent, meta = (AllowPrivateAccess = "true"))
 	class UOrbitalMovementComponent* movementComponent;
 
 	/** Gravity body - Rotates (and pulls) owner towards a target */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = gravityBody, meta = (AllowPrivateAccess = "true"))
 	class UGravityBody *gravityBody;
 
 	/** Mesh that will collide with the cursor */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = cursorPlane, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* cursorPlaneMesh;
 };
 

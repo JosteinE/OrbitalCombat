@@ -23,15 +23,15 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 	//Face the character in the direction of the cursors location
 	faceCursorLocation();
 
-	if (directionInput.X != 0 || directionInput.Y != 0 || directionInput.Z != 0)
+	if (bIsMoving)
+	{
 		directionInputToMovement(DeltaTime);
+		bIsMoving = false;
+	}
 	if (bJumping)
 		jumpInputToMovement();
 	if (bLMB)
-	{
 		fire();
-		bLMB = false;
-	}
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -47,6 +47,9 @@ void APlayerCharacterController::SetupInputComponent()
 
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacterController::jump);
 	InputComponent->BindAction("LMB", IE_Pressed, this, &APlayerCharacterController::leftMouseButton);
+	InputComponent->BindAction("LMB", IE_Released, this, &APlayerCharacterController::leftMouseButtonReleased);
+	InputComponent->BindAction("Running", IE_Pressed, this, &APlayerCharacterController::startRunning);
+	InputComponent->BindAction("Running", IE_Released, this, &APlayerCharacterController::stopRunning);
 }
 
 void APlayerCharacterController::faceCursorLocation()
@@ -127,6 +130,21 @@ void APlayerCharacterController::leftMouseButton()
 	bLMB = true;
 }
 
+void APlayerCharacterController::leftMouseButtonReleased()
+{
+	bLMB = false;
+}
+
+void APlayerCharacterController::startRunning()
+{
+	bIsRunning = true;
+}
+
+void APlayerCharacterController::stopRunning()
+{
+	bIsRunning = false;
+}
+
 void APlayerCharacterController::fire()
 {
 	FActorSpawnParameters spawnParams;
@@ -155,11 +173,13 @@ void APlayerCharacterController::fire()
 void APlayerCharacterController::moveForward(float inputAxis)
 {
 	directionInput.Y = inputAxis;
+	bIsMoving = true;
 }
 
 void APlayerCharacterController::moveRight(float inputAxis)
 {
 	directionInput.X = inputAxis;
+	bIsMoving = true;
 }
 
 //void APlayerCharacterController::SetNewMoveDestination(const FVector DestLocation)
