@@ -20,7 +20,7 @@ AProjectile::AProjectile()
 		// Use a sphere as a simple collision representation.
 		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 		// Set the sphere's collision radius.
-		CollisionComponent->InitSphereRadius(15.0f);
+		CollisionComponent->InitSphereRadius(projectileSize);
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
@@ -37,6 +37,7 @@ AProjectile::AProjectile()
 	{
 		staticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
 		staticMeshComponent->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Sphere.Sphere'")).Object);
+		staticMeshComponent->SetWorldScale3D(FVector{ projectileSize });
 		staticMeshComponent->SetupAttachment(RootComponent);
 		staticMeshComponent->SetEnableGravity(false);
 	}
@@ -46,7 +47,7 @@ AProjectile::AProjectile()
 	}
 	
 
-	InitialLifeSpan = 3.0f; // Destroy projectile after X seconds
+	InitialLifeSpan = lifeSpan; // Destroy projectile after X seconds
 }
 
 // Called when the game starts or when spawned
@@ -65,7 +66,7 @@ void AProjectile::Tick(float DeltaTime)
 
 	SetActorLocation(GetGravityBody()->planet->GetActorLocation());
 	AddActorLocalRotation(FRotator{ -projectileSpeed * DeltaTime, 0, 0 });
-	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet);
+	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet, true);
 }
 
 // Function that initializes the projectile's velocity in the shoot direction.

@@ -34,7 +34,13 @@ public:
 	FORCEINLINE class UGravityBody* GetGravityBody() { return gravityBody; }
 
 	UPROPERTY(EditAnywhere)
-	float projectileSpeed = 250.f;
+	float projectileSpeed = 100.f;
+
+	UPROPERTY(EditAnywhere)
+	float projectileSize = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float lifeSpan = 4.0f;
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)

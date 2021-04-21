@@ -34,8 +34,8 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 
 	if (bJumping)
 		jumpInputToMovement();
-	//if (bLMB)
-	//	fire();
+	if (bLMB && bIsRunning)
+		fire();
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -170,7 +170,6 @@ void APlayerCharacterController::fire()
 		//// Set the projectile's initial trajectory.
 		//FVector LaunchDirection = projectileSpawnRot.Vector();
 		//projectile->FireInDirection(LaunchDirection);
-		UE_LOG(LogTemp, Warning, TEXT("Firing!"));
 	}
 }
 
