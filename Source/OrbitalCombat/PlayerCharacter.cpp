@@ -4,6 +4,7 @@
 #include "Components/DecalComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "GameFramework/PawnMovementComponent.h"
@@ -19,14 +20,14 @@ APlayerCharacter::APlayerCharacter()
 	RootComponent = playerCapsuleComponent;
 
 	// Create a mesh for the player
-	staticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-	staticMeshComponent->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
-	staticMeshComponent->SetEnableGravity(false);
+	skeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
+	//staticMeshComponent->SetStaticMesh(ConstructorHelpers::FObjectFinder<UStaticMesh>(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'")).Object);
+	skeletalMeshComponent->SetEnableGravity(false);
 	//staticMeshComponent->SetSimulatePhysics(true);
 	//staticMeshComponent->SetLinearDamping(0.3f);
 	//staticMeshComponent->SetAngularDamping(500.f);
 	//RootComponent = staticMeshComponent;
-	staticMeshComponent->SetupAttachment(RootComponent);
+	skeletalMeshComponent->SetupAttachment(RootComponent);
 
 	// Create a movement component for the pawn
 	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");

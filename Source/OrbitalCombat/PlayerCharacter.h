@@ -31,7 +31,7 @@ public:
 	/** Returns the movementComponent subobject **/
 	FORCEINLINE class UOrbitalMovementComponent* GetMovementComponent() { return movementComponent; }
 	/** Returns the meshComponent subobject **/
-	FORCEINLINE class UStaticMeshComponent* GetMeshComponent () { return staticMeshComponent; }
+	FORCEINLINE class USkeletalMeshComponent* GetMeshComponent () { return skeletalMeshComponent; }
 	/** Returns the gravityBody subobject **/
 	FORCEINLINE class UGravityBody* GetGravityBody() { return gravityBody; }
 	/** Returns the cursorPlaneMesh subobject **/
@@ -59,8 +59,8 @@ private:
 	//	class UDecalComponent* cursorToWorld;
 
 	/** Mesh that represents the player */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = staticMesh, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* staticMeshComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = skeletalMesh, meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* skeletalMeshComponent;
 
 	/** Movement controller for the player */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = movementComponent, meta = (AllowPrivateAccess = "true"))

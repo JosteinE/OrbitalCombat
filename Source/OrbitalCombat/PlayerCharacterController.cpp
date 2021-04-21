@@ -3,6 +3,7 @@
 //#include "Runtime/Engine/Classes/Components/DecalComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 //#include "HeadMountedDisplayFunctionLibrary.h"
 #include "PlayerCharacter.h"
 #include "Engine/World.h"
@@ -23,11 +24,14 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 	//Face the character in the direction of the cursors location
 	faceCursorLocation();
 
-	if (bIsMoving)
+	if(directionInput.X == 0 && directionInput.Y == 0 && bIsMoving)
+		bIsMoving = false;
+	else if (bIsMoving)
 	{
 		directionInputToMovement(DeltaTime);
-		bIsMoving = false;
+		directionInput = FVector{ 0,0,0 };
 	}
+
 	if (bJumping)
 		jumpInputToMovement();
 	if (bLMB)
@@ -85,7 +89,6 @@ void APlayerCharacterController::drawForwardDebugLine()
 void APlayerCharacterController::directionInputToMovement(float deltaTime)
 {
 	Cast<APlayerCharacter>(GetPawn())->GetMovementComponent()->inputToMovement(directionInput, bJumping, deltaTime);
-	directionInput = FVector{ 0,0,0 };
 }
 
 void APlayerCharacterController::jumpInputToMovement()

@@ -53,7 +53,7 @@ void UOrbitalMovementComponent::jump()
 {
 	if (bGrounded)
 	{
-		Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->SetPhysicsLinearVelocity(Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->GetUpVector() * jumpForce, true);
+		//Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->SetPhysicsLinearVelocity(Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent()->GetUpVector() * jumpForce, true);
 		//UE_LOG(LogTemp, Warning, TEXT("GetUpVector: { %f, %f, %f }"), meshComponent->GetUpVector().X, meshComponent->GetUpVector().Y, meshComponent->GetUpVector().Z);
 	}
 }
