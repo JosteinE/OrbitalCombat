@@ -13,7 +13,7 @@ APlayerCharacter::APlayerCharacter()
 {
 	// Set size for player capsule
 	playerCapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	playerCapsuleComponent->InitCapsuleSize(50.f, 50.0f);
+	playerCapsuleComponent->InitCapsuleSize(25.f, 50.0f);
 	playerCapsuleComponent->SetEnableGravity(false);
 	playerCapsuleComponent->SetCollisionProfileName("Pawn");
 	//playerCapsuleComponent->SetupAttachment(RootComponent);

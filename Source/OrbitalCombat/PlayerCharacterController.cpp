@@ -34,8 +34,8 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 
 	if (bJumping)
 		jumpInputToMovement();
-	if (bLMB)
-		fire();
+	//if (bLMB)
+	//	fire();
 }
 
 void APlayerCharacterController::SetupInputComponent()
@@ -135,6 +135,7 @@ void APlayerCharacterController::leftMouseButton()
 
 void APlayerCharacterController::leftMouseButtonReleased()
 {
+	fire();
 	bLMB = false;
 }
 
