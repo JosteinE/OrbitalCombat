@@ -31,6 +31,8 @@ protected:
 
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
+	FVector controllerLookInput{ 0,0,0 };
+	bool bControllerLookRotated{ false };
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
@@ -38,6 +40,7 @@ protected:
 	// End PlayerController interface
 
 	void faceCursorLocation();
+	void faceControllerRotation();
 	void drawForwardDebugLine();
 
 	/** Navigate player to the current mouse cursor location. */
@@ -58,6 +61,8 @@ protected:
 	/** Input handlers for WASD */
 	void moveForward(float inputAxis);
 	void moveRight(float inputAxis);
+	void controllerLookX(float inputAxis);
+	void controllerLookY(float inputAxis);
 	void jump();
 	void leftMouseButton();
 	void leftMouseButtonReleased();

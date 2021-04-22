@@ -49,6 +49,9 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacterController::moveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacterController::moveRight);
 
+	InputComponent->BindAxis("ControllerLookY", this, &APlayerCharacterController::controllerLookY);
+	InputComponent->BindAxis("ControllerLookX", this, &APlayerCharacterController::controllerLookX);
+
 	InputComponent->BindAction("Jump", IE_Pressed, this, &APlayerCharacterController::jump);
 	InputComponent->BindAction("LMB", IE_Pressed, this, &APlayerCharacterController::leftMouseButton);
 	InputComponent->BindAction("LMB", IE_Released, this, &APlayerCharacterController::leftMouseButtonReleased);
@@ -61,6 +64,11 @@ void APlayerCharacterController::faceCursorLocation()
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
 	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
+}
+
+void APlayerCharacterController::faceControllerRotation() // Needs work!
+{
+	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(controllerLookInput, GetPawn()->GetActorUpVector()).ToQuat());
 }
 
 void APlayerCharacterController::drawForwardDebugLine()
@@ -183,6 +191,18 @@ void APlayerCharacterController::moveRight(float inputAxis)
 {
 	directionInput.X = inputAxis;
 	bIsMoving = true;
+}
+
+void APlayerCharacterController::controllerLookX(float inputAxis)
+{
+	controllerLookInput.X = inputAxis;
+	bControllerLookRotated = true;
+}
+
+void APlayerCharacterController::controllerLookY(float inputAxis)
+{
+	controllerLookInput.Y = inputAxis;
+	bControllerLookRotated = true;
 }
 
 //void APlayerCharacterController::SetNewMoveDestination(const FVector DestLocation)
