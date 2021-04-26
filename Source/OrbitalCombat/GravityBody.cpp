@@ -54,16 +54,6 @@ void UGravityBody::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	
-	//if (planet != nullptr) // ew gross constant check
-	//{
-	//	rotateMeshToSurface();
-	//	pullMeshToSurface(DeltaTime);
-	//}
-	//else
-	//{
-	//	//UE_LOG(LogTemp, Warning, TEXT("Stopping play as no planet were assigned to the GravityBody component"));
-	//}
 }
 
 void UGravityBody::setPlanetToOrbit(AActor * inPlanet)

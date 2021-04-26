@@ -34,13 +34,15 @@ public:
 	FORCEINLINE class UGravityBody* GetGravityBody() { return gravityBody; }
 
 	UPROPERTY(EditAnywhere)
-	float projectileSpeed = 100.f;
+	float rotationRate = 100.f; // Degrees per second (Around the planet)
 
 	UPROPERTY(EditAnywhere)
 	float projectileSize = 0.5f;
 
 	UPROPERTY(EditAnywhere)
-	float lifeSpan = 4.0f;
+	float lifeSpan = 3.6f; // full rotation: 360 / rotationRate = Time
+
+	FVector projectileDirection;
 
 	// Sphere collision component.
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
@@ -57,8 +59,4 @@ public:
 	/** Gravity body - Rotates (and pulls) owner towards a target */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UGravityBody *gravityBody;
-
-	FVector projectileDirection;
-	// Function that initializes the projectile's velocity in the shoot direction.
-	void FireInDirection(const FVector& ShootDirection);
 };

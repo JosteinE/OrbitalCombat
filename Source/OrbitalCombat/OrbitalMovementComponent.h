@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PawnMovementComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "OrbitalMovementComponent.generated.h"
 
 
@@ -35,8 +34,4 @@ public:
 	
 	void inputToMovement(FVector input, bool bJumping, float deltaTime);
 	void jump();
-
-private:
-	
-	//UStaticMeshComponent* meshComponent;		
 };

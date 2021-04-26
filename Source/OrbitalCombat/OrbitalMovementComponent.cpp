@@ -17,7 +17,6 @@ void UOrbitalMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//meshComponent = Cast<APlayerCharacter>(GetPawnOwner())->GetMeshComponent();
 }
 
 
@@ -45,7 +44,6 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 	moveDirection.Normalize();
 
 	//UE_LOG(LogTemp, Warning, TEXT("MoveDirection { %f, %f, %f }"), moveDirection.X, moveDirection.Y, moveDirection.Z);
-	//meshComponent->SetPhysicsLinearVelocity(moveDirection * speed * deltaTime, true);
 	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
 }
 

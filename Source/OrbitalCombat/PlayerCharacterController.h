@@ -26,39 +26,24 @@ public:
 	bool bLMB{ false };
 
 protected:
-	/** True if the controlled character should navigate to the mouse cursor. */
-	//uint32 bMoveToMouseCursor : 1;
-
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
+	// Determined by the right thumb stick
 	FVector controllerLookInput{ 0,0,0 };
 	bool bControllerLookRotated{ false };
 
-	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
-	// End PlayerController interface
 
 	void faceCursorLocation();
 	void faceControllerRotation();
 	void drawForwardDebugLine();
 
-	/** Navigate player to the current mouse cursor location. */
-	//void MoveToMouseCursor();
-
 	// Navigate player using the WASD buttons
 	void directionInputToMovement(float deltaTime);
 	void jumpInputToMovement();
-	void moveByKeyboard(float DeltaTime);
 
-	/** Navigate player to the given world location. */
-	//void SetNewMoveDestination(const FVector DestLocation);
-
-	/** Input handlers for SetDestination action. */
-	//void OnSetDestinationPressed();
-	//void OnSetDestinationReleased();
-
-	/** Input handlers for WASD */
+	/** Input handlers */
 	void moveForward(float inputAxis);
 	void moveRight(float inputAxis);
 	void controllerLookX(float inputAxis);

@@ -24,15 +24,6 @@ AProjectile::AProjectile()
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
 	}
-	if (!projectileMovementComponent)
-	{
-		// Use this component to drive this projectile's movement.
-		projectileMovementComponent = CreateDefaultSubobject<UOrbitalProjectileMovementComp>(TEXT("ProjectileMovementComponent"));
-		//projectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		projectileMovementComponent->InitialSpeed = 600.0f;
-		projectileMovementComponent->MaxSpeed = 600.0f;
-		projectileMovementComponent->ProjectileGravityScale = 0.0f;
-	}
 	if (!staticMeshComponent)
 	{
 		staticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
@@ -46,7 +37,6 @@ AProjectile::AProjectile()
 		gravityBody = CreateDefaultSubobject<UGravityBody>("GravityBody");
 	}
 	
-
 	InitialLifeSpan = lifeSpan; // Destroy projectile after X seconds
 }
 
@@ -54,8 +44,7 @@ AProjectile::AProjectile()
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	//distanceFromPlanet = 250.f * GetGravityBody()->planet->GetActorScale().X + GetActorScale().X; //the radius of the planet is by default 250
+
 	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
@@ -65,14 +54,6 @@ void AProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetActorLocation(GetGravityBody()->planet->GetActorLocation());
-	AddActorLocalRotation(FRotator{ -projectileSpeed * DeltaTime, 0, 0 });
+	AddActorLocalRotation(FRotator{ -rotationRate * DeltaTime, 0, 0 });
 	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet, true);
-}
-
-// Function that initializes the projectile's velocity in the shoot direction.
-void AProjectile::FireInDirection(const FVector& ShootDirection)
-{
-	//projectileDirection = ShootDirection;
-	//projectileDirection.Normalize();
-	//projectileMovementComponent->Velocity = ShootDirection * projectileMovementComponent->InitialSpeed;
 }

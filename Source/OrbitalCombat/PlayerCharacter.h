@@ -37,7 +37,7 @@ public:
 	/** Returns the cursorPlaneMesh subobject **/
 	FORCEINLINE class UStaticMeshComponent* GetCursorPlaneMeshComponent() { return cursorPlaneMesh; }
 
-	///** Returns cursorToWorld subobject **/
+	/** Returns cursorToWorld subobject **/
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return cursorToWorld; }
 
 private:

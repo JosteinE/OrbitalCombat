@@ -66,14 +66,6 @@ void UGravityAttractor::AttractMesh(UStaticMeshComponent * mesh, float deltaTime
 		FHitResult bColliding; // To log the hit result
 		mesh->SetWorldLocation(mesh->GetComponentLocation() + pullDirection * gravity, true, &bColliding);
 
-	/*	if (mesh->GetPhysicsAngularVelocity().GetMax() > 0.001f)
-		{
-			mesh->PutRigidBodyToSleep();
-			UE_LOG(LogTemp, Warning, TEXT("Body put to sleep"));
-		}
-
-		UE_LOG(LogTemp, Warning, TEXT("mesh velocity %f"), mesh->GetPhysicsAngularVelocity().GetMax());*/
-
 		if (bColliding.bBlockingHit)
 		{
 			*bGrounded = true;
