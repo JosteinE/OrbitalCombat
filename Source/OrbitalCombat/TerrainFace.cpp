@@ -4,47 +4,56 @@
 
 TerrainFace::TerrainFace(int resolution, FVector localUp, int section)
 {
-	FVector axisA{ localUp.Y, localUp.Z, localUp.X }; // A vector pointing in a 90degree angle from localUp
-	FVector axisb{ FVector::CrossProduct(localUp, axisA) }; // A vector that is perpendicular to localUp and axisA
+	//FVector axisA{ localUp.Y, localUp.Z, localUp.X }; // A vector pointing in a 90degree angle from localUp
+	//FVector axisb{ FVector::CrossProduct(localUp, axisA) }; // A vector that is perpendicular to localUp and axisA
 
-	// Number of Squares	= (resolution - 1)^2
-	// Number of Triangles	= (resolution - 1)^2 * 2			
-	// Number of Vertices	= (resolution - 1)^2 * 2 * 3
-	vertices = new TArray<FVector>[resolution * resolution];
-	triangles = new TArray<int>[(resolution - 1)*(resolution - 1) * 2 * 3];
-	int triIndex = 0;
+	//// Number of Squares	= (resolution - 1)^2
+	//// Number of Triangles	= (resolution - 1)^2 * 2			
+	//// Number of Vertices	= (resolution - 1)^2 * 2 * 3
+	//vertices.AddZeroed(resolution * resolution); // = new TArray<FVector>[resolution * resolution];
+	//triangles.AddZeroed((resolution - 1)*(resolution - 1) * 2 * 3); // = new TArray<int32>[(resolution - 1)*(resolution - 1) * 2 * 3];
+	//normals.AddZeroed(resolution * resolution);// = new TArray<FVector>[resolution * resolution];
+	//uv0.AddZeroed(resolution * resolution); // = new TArray<FVector2D>[resolution * resolution];
+	//int triIndex = 0;
 
-	for (int y = -1; y < resolution; y += 1 / (resolution * 0.5f))		// We add the step amount here for the y axis
-	{
-		for (int x = -1; x < resolution; x += 1 / (resolution * 0.5f))	// We add the step amount here for the x axis
-		{
-			FVector pointOnUnitCube = localUp + axisA * x + axisb * y; // Starting at x = -1, y = -1, z = Up, constructing along the x axis before moving down y.
-			int index = (x + y + 2) * (resolution * 0.5f); // Current index based on number of iterations calculated by using the sum of x and y
-			(*vertices)[index] = pointOnUnitCube;
+	//for (int y = -1; y < resolution; y += 1 / (resolution * 0.5f))		// We add the step amount here for the y axis
+	//{
+	//	for (int x = -1; x < resolution; x += 1 / (resolution * 0.5f))	// We add the step amount here for the x axis
+	//	{
+	//		FVector pointOnUnitCube = localUp + axisA * x + axisb * y; // Starting at x = -1, y = -1, z = Up, constructing along the x axis before moving down y.
+	//		int index = static_cast<int>((x + y + 2) * (resolution * 0.5f)); // Current index based on number of iterations calculated by using the sum of x and y
+	//		vertices[index] = pointOnUnitCube;
+	//		normals[index] = localUp;
 
-			// Constructing the triangles, making sure we're not going constructing triangles beyond scope
-			if (x != resolution - (1 / (resolution * 0.5f)) && y != resolution - (1 / (resolution * 0.5f)))
-			{
-				(*triangles)[triIndex] = index;
-				(*triangles)[triIndex + 1] = index + resolution + 1;
-				(*triangles)[triIndex + 2] = index + resolution;
+	//		// Constructing the triangles, making sure we're not going constructing triangles beyond scope
+	//		if (x != resolution - (1 / (resolution * 0.5f)) && y != resolution - (1 / (resolution * 0.5f)))
+	//		{
+	//			triangles[triIndex] = index;
+	//			triangles[triIndex + 1] = index + resolution + 1;
+	//			triangles[triIndex + 2] = index + resolution;
 
-				(*triangles)[triIndex + 3] = index;
-				(*triangles)[triIndex + 4] = index + 1;
-				(*triangles)[triIndex + 5] = index + resolution;
-				triIndex += 6;
-			}
-		}
-	}
+	//			triangles[triIndex + 3] = index;
+	//			triangles[triIndex + 4] = index + 1;
+	//			triangles[triIndex + 5] = index + resolution;
+	//			triIndex += 6;
+	//		}
+	//	}
+	//}
 }
 
 TerrainFace::~TerrainFace()
 {
-	vertices->Empty();
-	delete vertices;
+	//vertices->Empty();
+	//delete vertices;
 
-	triangles->Empty();
-	delete triangles;
+	//triangles->Empty();
+	//delete triangles;
+
+	//normals->Empty();
+	//delete normals;
+
+	//uv0->Empty();
+	//delete normals;
 }
 
 void TerrainFace::generateSectionForMesh(int resolution, FVector localUp, int section)
@@ -53,10 +62,20 @@ void TerrainFace::generateSectionForMesh(int resolution, FVector localUp, int se
 
 TArray<FVector>* TerrainFace::getVertices()
 {
-	return vertices;
+	return &vertices;
 }
 
 TArray<int>* TerrainFace::getTriangles()
 {
-	return triangles;
+	return &triangles;
+}
+
+TArray<FVector>* TerrainFace::getNormals()
+{
+	return &normals;
+}
+
+TArray<FVector2D>* TerrainFace::getUV0()
+{
+	return &uv0;
 }

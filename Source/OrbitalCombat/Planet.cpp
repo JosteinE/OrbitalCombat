@@ -27,9 +27,11 @@ void APlanet::constructPlanet()
 
 	for (int section = 0; section < 6; section++) // 6 = number of faces/sections
 	{
-		TerrainFace terrainFace(resolution, faceDirections[section], section);
-		planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
-		TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), true);
+		planetMesh->ClearMeshSection(section);
+
+		//TerrainFace terrainFace(resolution, faceDirections[section], section);
+		//planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
+		//*terrainFace.getNormals(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
 	}
 }
 
