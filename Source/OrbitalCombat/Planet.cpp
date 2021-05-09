@@ -29,9 +29,9 @@ void APlanet::constructPlanet()
 	{
 		planetMesh->ClearMeshSection(section);
 
-		//TerrainFace terrainFace(resolution, faceDirections[section], section);
-		//planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
-		//*terrainFace.getNormals(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
+		TerrainFace terrainFace(resolution, faceDirections[section], section);
+		planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
+		*terrainFace.getNormals(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
 	}
 }
 
