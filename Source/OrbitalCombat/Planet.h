@@ -11,8 +11,8 @@ UCLASS()
 class ORBITALCOMBAT_API APlanet : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	APlanet();
 
@@ -22,8 +22,10 @@ protected:
 
 	UProceduralMeshComponent * planetMesh;
 
+	UPROPERTY(EditAnywhere, meta=(ClampMin = "2", ClampMax = "256"))
 	int resolution = 4;
 
 private:
-	void constructPlanet();
+	void constructPlanet(int res);
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 };
