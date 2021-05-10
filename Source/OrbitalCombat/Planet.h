@@ -25,7 +25,10 @@ protected:
 	UPROPERTY(EditAnywhere, meta=(ClampMin = "2", ClampMax = "256"))
 	int resolution = 4;
 
+	UPROPERTY(EditAnywhere)
+	bool spherical = true;
+
 private:
-	void constructPlanet(int res);
+	void constructPlanet(int res, bool bSphere = true);
 	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 };

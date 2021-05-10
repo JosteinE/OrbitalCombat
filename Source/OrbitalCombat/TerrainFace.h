@@ -7,7 +7,7 @@
 class ORBITALCOMBAT_API TerrainFace
 {
 public:
-	TerrainFace(int resolution, FVector localUp, int section);
+	TerrainFace(int resolution, FVector localUp, int section, bool bSphere = false);
 	~TerrainFace();
 
 private:
@@ -15,8 +15,6 @@ private:
 	TArray<int> triangles;
 	TArray<FVector> normals;
 	TArray<FVector2D> uv0;
-
-	void generateSectionForMesh(int resolution, FVector localUp, int section);
 
 public:
 	TArray<FVector> * getVertices();
