@@ -2,50 +2,59 @@
 
 #include "TerrainFace.h"
 
-TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSphere)
+TerrainFace::TerrainFace(int resolution, FVector localUp, int section, FVector origin, bool bSphere)
 {
 	FVector axisA{ localUp.Z, localUp.X, localUp.Y }; // A scrambled version of the up vector
 	FVector axisB{ FVector::CrossProduct(localUp, axisA) }; // A vector that is perpendicular to localUp and axisA
+	
 	// Number of Squares	= (resolution - 1)^2
 	// Number of Triangles	= (resolution - 1)^2 * 2			
 	// Number of Vertices	= (resolution - 1)^2 * 2 * 3
-	vertices.AddZeroed(resolution * resolution); // = new TArray<FVector>[resolution * resolution];
-	triangles.AddZeroed((resolution - 1)*(resolution - 1) * 2 * 3); // = new TArray<int32>[(resolution - 1)*(resolution - 1) * 2 * 3];
-	normals.AddZeroed(resolution * resolution);// = new TArray<FVector>[resolution * resolution];
-	uv0.AddZeroed(resolution * resolution); // = new TArray<FVector2D>[resolution * resolution];
+	vertices.AddZeroed(resolution * resolution);
+	triangles.AddZeroed((resolution - 1)*(resolution - 1) * 2 * 3);
+	normals.AddZeroed(resolution * resolution);
+	uv0.AddZeroed(resolution * resolution);
+
 	int triIndex = 0;
 	int index = 0;
 	float meshStart = -50.f;
 	float meshEnd = -meshStart;
-	float vertStep = (meshEnd - meshStart) / (resolution - 1.f);
-	for (float y = meshStart; y <= meshEnd; y += vertStep)		// We add the step amount here for the y axis
+	float vertStep = (meshEnd - meshStart) / (resolution - 1.f); // Steps along the X and Y axis
+	float wiggleRoom = vertStep * 0.5f; // Certain combinations with x and y will cause them to iterate just above meshEnd, causing mesh gaps
+	for (float y = meshStart; y <= meshEnd + wiggleRoom; y += vertStep)		// We add the step amount here for the y axis
 	{
-		for (float x = meshStart; x <= meshEnd; x += vertStep)	// We add the step amount here for the x axis
+		for (float x = meshStart; x <= meshEnd + wiggleRoom; x += vertStep)	// We add the step amount here for the x axis
 		{
 			FVector pointOnUnitCube = localUp * meshEnd + axisA * x + axisB * y; // Starting at x = meshStart, y = meshStart, z = Up * meshEnd, constructing along the x axis before moving down y.
 			if (bSphere)
 			{
-				pointOnUnitCube.Normalize();
-				pointOnUnitCube *= meshEnd;
+				pointOnUnitCube.Normalize(); // Force every vertex to share the same distance from the mesh origin
+				pointOnUnitCube *= meshEnd; // Extend the default radius
+				normals[index] = pointOnUnitCube - origin;
 			}
+			else
+				normals[index] = localUp;
+			
 			vertices[index] = pointOnUnitCube;
-			normals[index] = localUp;
 			uv0[index] = FVector2D{ x, y };
 
 			// Constructing the triangles counter-clockwise, making sure we're not going constructing triangles beyond scope
-			if (x <= meshEnd - vertStep && y <= meshEnd - vertStep && triIndex < triangles.Num()) // shouldnt really need this last num check...
+			if (x <= meshEnd - vertStep + wiggleRoom && y <= meshEnd - vertStep + wiggleRoom)
 			{
-				triangles[triIndex] = index;
-				triangles[triIndex + 1] = index + resolution;
-				triangles[triIndex + 2] = index + resolution + 1;
+				if (triIndex < triangles.Num()) // Shouldn't need this, but will crash everything if triIndex exceedes the array
+				{
+					triangles[triIndex] = index;
+					triangles[triIndex + 1] = index + resolution;
+					triangles[triIndex + 2] = index + resolution + 1;
 
-				triangles[triIndex + 3] = index;
-				triangles[triIndex + 4] = index + resolution + 1;
-				triangles[triIndex + 5] = index + 1;
-				triIndex += 6;
+					triangles[triIndex + 3] = index;
+					triangles[triIndex + 4] = index + resolution + 1;
+					triangles[triIndex + 5] = index + 1;
+					triIndex += 6;
+				}
 			}
-			index++;
 
+			index++;
 		}
 	}
 }
