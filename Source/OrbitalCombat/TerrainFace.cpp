@@ -2,7 +2,7 @@
 
 #include "TerrainFace.h"
 
-TerrainFace::TerrainFace(int resolution, FVector localUp, int section, FVector origin, bool bSphere)
+TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSphere)
 {
 	FVector axisA{ localUp.Z, localUp.X, localUp.Y }; // A scrambled version of the up vector
 	FVector axisB{ FVector::CrossProduct(localUp, axisA) }; // A vector that is perpendicular to localUp and axisA
@@ -26,14 +26,14 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, FVector o
 		for (float x = meshStart; x <= meshEnd + wiggleRoom; x += vertStep)	// We add the step amount here for the x axis
 		{
 			FVector pointOnUnitCube = localUp * meshEnd + axisA * x + axisB * y; // Starting at x = meshStart, y = meshStart, z = Up * meshEnd, constructing along the x axis before moving down y.
+			
 			if (bSphere)
 			{
 				pointOnUnitCube.Normalize(); // Force every vertex to share the same distance from the mesh origin
 				pointOnUnitCube *= meshEnd; // Extend the default radius
-				normals[index] = pointOnUnitCube - origin;
 			}
-			else
-				normals[index] = localUp;
+			
+			normals[index] = localUp;
 			
 			vertices[index] = pointOnUnitCube;
 			uv0[index] = FVector2D{ x, y };
