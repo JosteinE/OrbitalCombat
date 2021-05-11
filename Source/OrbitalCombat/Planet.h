@@ -23,7 +23,7 @@ protected:
 	UProceduralMeshComponent * planetMesh;
 
 	UPROPERTY(EditAnywhere, meta=(ClampMin = "2", ClampMax = "256"))
-	int resolution = 4;
+	int resolution = 12;
 
 	UPROPERTY(EditAnywhere)
 	bool spherical = true;

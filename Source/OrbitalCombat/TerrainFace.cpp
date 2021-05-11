@@ -2,7 +2,7 @@
 
 #include "TerrainFace.h"
 
-TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSphere)
+TerrainFace::TerrainFace(int resolution, FVector localUp, int section, FVector origin, bool bSphere)
 {
 	FVector axisA{ localUp.Z, localUp.X, localUp.Y }; // A scrambled version of the up vector
 	FVector axisB{ FVector::CrossProduct(localUp, axisA) }; // A vector that is perpendicular to localUp and axisA
@@ -29,10 +29,13 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSph
 			if (bSphere)
 			{
 				pointOnUnitCube.Normalize(); // Force every vertex to share the same distance from the mesh origin
-				pointOnUnitCube *= meshEnd; // Extend the default radius
+				normals[index] = pointOnUnitCube;
+				pointOnUnitCube *= (meshEnd - meshStart) * 0.5f; // Extend the default radius
 			}
-			
-			normals[index] = localUp;
+			else
+			{
+				normals[index] = localUp;
+			}
 			
 			vertices[index] = pointOnUnitCube;
 			uv0[index] = FVector2D{ (meshStart + x * vertStep), (meshStart + y * vertStep) };
@@ -40,35 +43,17 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSph
 			// Constructing the triangles counter-clockwise, making sure we're not going constructing triangles beyond scope
 			if (x != resolution - 1 && y != resolution - 1)
 			{
-				if (triIndex < triangles.Num()) // Shouldn't need this, but will crash everything if triIndex exceedes the array
-				{
-					triangles[triIndex] = index;
-					triangles[triIndex + 1] = index + resolution;
-					triangles[triIndex + 2] = index + resolution + 1;
+				triangles[triIndex] = index;
+				triangles[triIndex + 1] = index + resolution;
+				triangles[triIndex + 2] = index + resolution + 1;
 
-					triangles[triIndex + 3] = index;
-					triangles[triIndex + 4] = index + resolution + 1;
-					triangles[triIndex + 5] = index + 1;
-					triIndex += 6;
-				}
+				triangles[triIndex + 3] = index;
+				triangles[triIndex + 4] = index + resolution + 1;
+				triangles[triIndex + 5] = index + 1;
+				triIndex += 6;
 			}
 		}
 	}
-}
-
-TerrainFace::~TerrainFace()
-{
-	//vertices->Empty();
-	//delete vertices;
-
-	//triangles->Empty();
-	//delete triangles;
-
-	//normals->Empty();
-	//delete normals;
-
-	//uv0->Empty();
-	//delete normals;
 }
 
 TArray<FVector>* TerrainFace::getVertices()

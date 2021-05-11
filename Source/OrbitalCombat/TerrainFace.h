@@ -7,8 +7,7 @@
 class ORBITALCOMBAT_API TerrainFace
 {
 public:
-	TerrainFace(int resolution, FVector localUp, int section, bool bSphere = true);
-	~TerrainFace();
+	TerrainFace(int resolution, FVector localUp, int section, FVector origin, bool bSphere = true);
 
 private:
 	TArray<FVector> vertices;

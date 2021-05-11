@@ -27,7 +27,8 @@ void APlanet::constructPlanet(int res, bool bSphere)
 
 	for (int section = 0; section < 6; section++) // 6 = number of faces/sections
 	{
-		TerrainFace terrainFace(res, faceDirections[section], section, bSphere);
+		planetMesh->ClearMeshSection(section);
+		TerrainFace terrainFace(res, faceDirections[section], section, GetActorLocation(), bSphere);
 		planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
 		*terrainFace.getNormals(), *terrainFace.getUV0(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
 	}
@@ -42,7 +43,5 @@ void APlanet::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEven
 		constructPlanet(resolution, spherical);
 		RegisterAllComponents(); // Upon reconstruction, the component will have to be re-registered in order to be visible again
 	}
-
-	//planetMesh->UpdateComponentToWorld(); // Without this my normals would seem incorrect, such that the mesh would just be completely black
 }
 
