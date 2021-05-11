@@ -20,6 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
 	UProceduralMeshComponent * planetMesh;
 
 	UPROPERTY(EditAnywhere, meta=(ClampMin = "2", ClampMax = "256"))

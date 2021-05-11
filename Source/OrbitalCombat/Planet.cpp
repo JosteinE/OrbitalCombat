@@ -7,6 +7,7 @@
 APlanet::APlanet()
 {
 	planetMesh = CreateDefaultSubobject<UProceduralMeshComponent>("PlanetMeshComponent");
+	planetMesh->SetCollisionProfileName("BlockAll");
 	RootComponent = planetMesh;
 
 	constructPlanet(resolution, spherical);
@@ -27,13 +28,10 @@ void APlanet::constructPlanet(int res, bool bSphere)
 
 	for (int section = 0; section < 6; section++) // 6 = number of faces/sections
 	{
-		planetMesh->ClearMeshSection(section);
 		TerrainFace terrainFace(res, faceDirections[section], section, GetActorLocation(), bSphere);
 		planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
 		*terrainFace.getNormals(), *terrainFace.getUV0(), TArray<FColor>(), TArray<FProcMeshTangent>(), true);
 	}
-
-	planetMesh->SetCollisionProfileName("BlockAll");
 }
 
 void APlanet::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)

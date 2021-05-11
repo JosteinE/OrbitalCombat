@@ -16,6 +16,7 @@ APlayerCharacter::APlayerCharacter()
 	playerCapsuleComponent->InitCapsuleSize(25.f, 50.0f);
 	playerCapsuleComponent->SetEnableGravity(false);
 	playerCapsuleComponent->SetCollisionProfileName("Pawn");
+	playerCapsuleComponent->SetGenerateOverlapEvents(true);
 	RootComponent = playerCapsuleComponent;
 
 	// Create a mesh for the player

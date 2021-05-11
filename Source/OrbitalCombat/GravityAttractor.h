@@ -19,7 +19,7 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere)
-		float gravity = 1500;
+	float gravity = 5.f;
 
 	void RotateToSurface(AActor* body);
 	void RotateMeshToSurface(UStaticMeshComponent * mesh);

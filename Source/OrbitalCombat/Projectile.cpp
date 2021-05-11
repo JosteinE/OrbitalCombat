@@ -4,6 +4,7 @@
 #include "Projectile.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "PlayerCharacter.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -23,6 +24,9 @@ AProjectile::AProjectile()
 		CollisionComponent->InitSphereRadius(projectileSize);
 		// Set the root component to be the collision component.
 		RootComponent = CollisionComponent;
+
+		CollisionComponent->SetCollisionProfileName("OverlapAllDynamic");
+		CollisionComponent->SetGenerateOverlapEvents(true);
 	}
 	if (!staticMeshComponent)
 	{
@@ -31,6 +35,7 @@ AProjectile::AProjectile()
 		staticMeshComponent->SetWorldScale3D(FVector{ projectileSize });
 		staticMeshComponent->SetupAttachment(RootComponent);
 		staticMeshComponent->SetEnableGravity(false);
+		staticMeshComponent->SetCollisionProfileName("NoCollision");
 	}
 	if (!gravityBody)
 	{
@@ -45,6 +50,9 @@ void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Bind delegate
+	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::onBeginOverlap);
+
 	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
@@ -55,5 +63,15 @@ void AProjectile::Tick(float DeltaTime)
 
 	SetActorLocation(GetGravityBody()->planet->GetActorLocation());
 	AddActorLocalRotation(FRotator{ -rotationRate * DeltaTime, 0, 0 });
-	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet, true);
+	SetActorLocation(GetActorLocation() + GetActorUpVector() * distanceFromPlanet);
+}
+
+void AProjectile::onBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if (GetLifeSpan() < lifeSpan - 0.5f && Cast<APlayerCharacter>(OtherActor))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ComponentHit: %s"), *OtherComp->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("ActorHit: %s"), *OtherActor->GetActorLabel());
+		Destroy();
+	}
 }

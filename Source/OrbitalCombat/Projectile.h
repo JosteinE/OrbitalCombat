@@ -59,4 +59,8 @@ public:
 	/** Gravity body - Rotates (and pulls) owner towards a target */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UGravityBody *gravityBody;
+
+private:
+	UFUNCTION()
+	void onBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
 };
