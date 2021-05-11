@@ -30,8 +30,10 @@ void APlanet::constructPlanet(int res, bool bSphere)
 		planetMesh->ClearMeshSection(section);
 		TerrainFace terrainFace(res, faceDirections[section], section, GetActorLocation(), bSphere);
 		planetMesh->CreateMeshSection(section, *terrainFace.getVertices(), *terrainFace.getTriangles(),
-		*terrainFace.getNormals(), *terrainFace.getUV0(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
+		*terrainFace.getNormals(), *terrainFace.getUV0(), TArray<FColor>(), TArray<FProcMeshTangent>(), true);
 	}
+
+	planetMesh->SetCollisionProfileName("BlockAll");
 }
 
 void APlanet::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEvent)

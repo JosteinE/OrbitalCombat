@@ -29,8 +29,8 @@ APlayerCharacter::APlayerCharacter()
 	// Create a camera boom...
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	cameraBoom->SetupAttachment(RootComponent);
-	cameraBoom->TargetArmLength = 800.f;
-	cameraBoom->RelativeRotation = FRotator(-60.f, 0.f, 0.f);
+	cameraBoom->TargetArmLength = 1500.f;
+	cameraBoom->RelativeRotation = FRotator(-90.f, 0.f, 0.f);
 	cameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	// Create a camera...
