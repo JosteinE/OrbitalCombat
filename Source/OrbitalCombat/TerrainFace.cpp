@@ -16,16 +16,15 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSph
 	uv0.AddZeroed(resolution * resolution);
 
 	int triIndex = 0;
-	int index = 0;
 	float meshStart = -50.f;
 	float meshEnd = -meshStart;
 	float vertStep = (meshEnd - meshStart) / (resolution - 1.f); // Steps along the X and Y axis
-	float wiggleRoom = vertStep * 0.5f; // Certain combinations with x and y will cause them to iterate just above meshEnd, causing mesh gaps
-	for (float y = meshStart; y <= meshEnd + wiggleRoom; y += vertStep)		// We add the step amount here for the y axis
+	for (int y = 0; y < resolution; y++)		// We add the step amount here for the y axis
 	{
-		for (float x = meshStart; x <= meshEnd + wiggleRoom; x += vertStep)	// We add the step amount here for the x axis
+		for (int x = 0; x < resolution; x++)	// We add the step amount here for the x axis
 		{
-			FVector pointOnUnitCube = localUp * meshEnd + axisA * x + axisB * y; // Starting at x = meshStart, y = meshStart, z = Up * meshEnd, constructing along the x axis before moving down y.
+			int index = y * resolution + x; // Current vertex
+			FVector pointOnUnitCube = localUp * meshEnd + axisA * (meshStart + x * vertStep) + axisB * (meshStart + y * vertStep); // Starting at x = meshStart, y = meshStart, z = Up * meshEnd, constructing along the x axis before moving down y.
 			
 			if (bSphere)
 			{
@@ -36,10 +35,10 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSph
 			normals[index] = localUp;
 			
 			vertices[index] = pointOnUnitCube;
-			uv0[index] = FVector2D{ x, y };
+			uv0[index] = FVector2D{ (meshStart + x * vertStep), (meshStart + y * vertStep) };
 
 			// Constructing the triangles counter-clockwise, making sure we're not going constructing triangles beyond scope
-			if (x <= meshEnd - vertStep + wiggleRoom && y <= meshEnd - vertStep + wiggleRoom)
+			if (x != resolution - 1 && y != resolution - 1)
 			{
 				if (triIndex < triangles.Num()) // Shouldn't need this, but will crash everything if triIndex exceedes the array
 				{
@@ -53,8 +52,6 @@ TerrainFace::TerrainFace(int resolution, FVector localUp, int section, bool bSph
 					triIndex += 6;
 				}
 			}
-
-			index++;
 		}
 	}
 }
