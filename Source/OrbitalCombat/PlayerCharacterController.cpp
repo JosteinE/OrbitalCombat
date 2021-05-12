@@ -7,13 +7,20 @@
 #include "PlayerCharacter.h"
 #include "Engine/World.h"
 #include "Kismet/KismetMathLibrary.h"
-
 #include "DrawDebugHelpers.h"
 
 APlayerCharacterController::APlayerCharacterController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+}
+
+void APlayerCharacterController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//Assign these variables the size of the screen to help guide the controller look rotator in the faceControllerRotation function.
+	GetViewportSize(screenX, screenY);
 }
 
 void APlayerCharacterController::PlayerTick(float DeltaTime)
@@ -57,14 +64,11 @@ void APlayerCharacterController::SetupInputComponent()
 
 void APlayerCharacterController::faceCursorLocation()
 {
+	if(bUsingController)
+		SetMouseLocation(screenX * 0.5f + controllerLookInput.X * 100.f, screenY * 0.5f + controllerLookInput.Y * 100.f);
 	FHitResult Hit;
 	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
 	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
-}
-
-void APlayerCharacterController::faceControllerRotation() // Needs work!
-{
-	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(controllerLookInput, GetPawn()->GetActorUpVector()).ToQuat());
 }
 
 void APlayerCharacterController::drawForwardDebugLine()
@@ -146,11 +150,11 @@ void APlayerCharacterController::moveRight(float inputAxis)
 void APlayerCharacterController::controllerLookX(float inputAxis)
 {
 	controllerLookInput.X = inputAxis;
-	bControllerLookRotated = true;
+	bUsingController = true; // NEED A BETTER SOLUTION TO THIS
 }
 
 void APlayerCharacterController::controllerLookY(float inputAxis)
 {
 	controllerLookInput.Y = inputAxis;
-	bControllerLookRotated = true;
+	bUsingController = true; // NEED A BETTER SOLUTION TO THIS
 }

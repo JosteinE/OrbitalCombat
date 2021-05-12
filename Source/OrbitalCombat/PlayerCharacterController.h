@@ -26,17 +26,21 @@ public:
 	bool bLMB{ false };
 
 protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+	// size of the screen for cursor placement to help controller look direction
+	int32 screenX, screenY;
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
 	// Determined by the right thumb stick
-	FVector controllerLookInput{ 0,0,0 };
-	bool bControllerLookRotated{ false };
+	FVector2D controllerLookInput{ 0,0 };
+	bool bUsingController{ false };
 
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
 
 	void faceCursorLocation();
-	void faceControllerRotation();
 	void drawForwardDebugLine();
 
 	// Navigate player using the WASD buttons
