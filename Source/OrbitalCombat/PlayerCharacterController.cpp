@@ -19,8 +19,6 @@ void APlayerCharacterController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//Assign these variables the size of the screen to help guide the controller look rotator in the faceControllerRotation function.
-	GetViewportSize(screenX, screenY);
 }
 
 void APlayerCharacterController::PlayerTick(float DeltaTime)
@@ -30,7 +28,7 @@ void APlayerCharacterController::PlayerTick(float DeltaTime)
 	//Face the character in the direction of the cursors location
 	faceCursorLocation();
 
-	if(directionInput.X == 0 && directionInput.Y == 0 && bIsMoving)
+	if (directionInput.X == 0 && directionInput.Y == 0 && bIsMoving)
 		bIsMoving = false;
 	else if (bIsMoving)
 	{
@@ -60,6 +58,7 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAction("LMB", IE_Released, this, &APlayerCharacterController::leftMouseButtonReleased);
 	InputComponent->BindAction("Running", IE_Pressed, this, &APlayerCharacterController::startRunning);
 	InputComponent->BindAction("Running", IE_Released, this, &APlayerCharacterController::stopRunning);
+	InputComponent->BindAction("ControllerFaceButtonB", IE_Pressed, this, &APlayerCharacterController::controllerFaceButtonB);
 }
 
 void APlayerCharacterController::faceCursorLocation()
@@ -67,7 +66,7 @@ void APlayerCharacterController::faceCursorLocation()
 	FHitResult Hit;
 	if (bUsingController)
 	{
-		FVector2D screenLocation{ screenX * 0.5f + controllerLookInput.X * 100.f, screenY * 0.5f + controllerLookInput.Y * 100.f };
+		FVector2D screenLocation{ characterScreenLocation.X + controllerLookInput.X * 100.f, characterScreenLocation.Y + controllerLookInput.Y * 100.f };
 		GetHitResultAtScreenPosition(screenLocation, ECC_GameTraceChannel1, false, Hit);
 	}
 	else
@@ -155,11 +154,17 @@ void APlayerCharacterController::moveRight(float inputAxis)
 void APlayerCharacterController::controllerLookX(float inputAxis)
 {
 	controllerLookInput.X = inputAxis;
-	bUsingController = true; // NEED A BETTER SOLUTION TO THIS
 }
 
 void APlayerCharacterController::controllerLookY(float inputAxis)
 {
 	controllerLookInput.Y = inputAxis;
-	bUsingController = true; // NEED A BETTER SOLUTION TO THIS
+}
+
+void APlayerCharacterController::controllerFaceButtonB()
+{
+	// Enables rotation via the right thumb stick
+	bUsingController = true;
+	
+	ProjectWorldLocationToScreen(GetPawn()->GetActorLocation(), characterScreenLocation);
 }

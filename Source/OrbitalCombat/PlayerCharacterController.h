@@ -29,8 +29,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// size of the screen for cursor placement to help controller look direction
-	int32 screenX, screenY;
+	// Character placement on screen to help controller look direction
+	FVector2D characterScreenLocation;
 	// Determined by WASD
 	FVector directionInput{ 0,0,0 };
 	// Determined by the right thumb stick
@@ -50,12 +50,15 @@ protected:
 	/** Input handlers */
 	void moveForward(float inputAxis);
 	void moveRight(float inputAxis);
-	void controllerLookX(float inputAxis);
-	void controllerLookY(float inputAxis);
 	void jump();
 	void leftMouseButton();
 	void leftMouseButtonReleased();
 	void startRunning();
 	void stopRunning();
 	void fire();
+
+	//Controller specific input
+	void controllerLookX(float inputAxis);
+	void controllerLookY(float inputAxis);
+	void controllerFaceButtonB();
 };
