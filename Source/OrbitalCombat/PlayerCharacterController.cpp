@@ -64,10 +64,15 @@ void APlayerCharacterController::SetupInputComponent()
 
 void APlayerCharacterController::faceCursorLocation()
 {
-	if(bUsingController)
-		SetMouseLocation(screenX * 0.5f + controllerLookInput.X * 100.f, screenY * 0.5f + controllerLookInput.Y * 100.f);
 	FHitResult Hit;
-	GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
+	if (bUsingController)
+	{
+		FVector2D screenLocation{ screenX * 0.5f + controllerLookInput.X * 100.f, screenY * 0.5f + controllerLookInput.Y * 100.f };
+		GetHitResultAtScreenPosition(screenLocation, ECC_GameTraceChannel1, false, Hit);
+	}
+	else
+		GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
+
 	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
 }
 
