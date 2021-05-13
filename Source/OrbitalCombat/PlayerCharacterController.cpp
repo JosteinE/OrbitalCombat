@@ -69,7 +69,12 @@ void APlayerCharacterController::faceCursorLocation()
 	FVector cursorWorldLocation, cursorWorldDirection;
 
 	if (bUsingController)
-		screenLocation = characterScreenLocation + controllerLookInput * 100.f;
+	{
+		if (controllerLookInput.Size() > 0)
+			screenLocation = characterScreenLocation + controllerLookInput * 100.f;
+		else
+			return; // Prevents the character from resetting their rotation
+	}
 	else
 		GetMousePosition(screenLocation.X, screenLocation.Y);
 

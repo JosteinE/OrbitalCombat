@@ -37,7 +37,7 @@ public:
 	float rotationRate = 100.f; // Degrees per second (Around the planet)
 
 	UPROPERTY(EditAnywhere)
-	float projectileSize = 0.5f;
+	float projectileSize = 0.5f; // Projectile radius
 
 	UPROPERTY(EditAnywhere)
 	float lifeSpan = 3.6f; // full rotation: 360 / rotationRate = Time
