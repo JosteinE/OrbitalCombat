@@ -68,7 +68,7 @@ void AProjectile::Tick(float DeltaTime)
 
 void AProjectile::onBeginOverlap(UPrimitiveComponent * OverlappedComponent, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	if (GetLifeSpan() < lifeSpan - 0.5f && Cast<APlayerCharacter>(OtherActor))
+	if (GetLifeSpan() < lifeSpan - collisionDelay && Cast<APlayerCharacter>(OtherActor))
 	{
 		OtherActor->SetActorLocation(OtherActor->GetActorLocation() + OtherActor->GetActorUpVector() * 500.f);
 		Destroy();

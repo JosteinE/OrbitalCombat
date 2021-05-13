@@ -66,11 +66,10 @@ void APlayerCharacterController::faceCursorLocation()
 	FHitResult Hit;
 	UPrimitiveComponent* cursorCollider = Cast<APlayerCharacter>(GetPawn())->GetCursorPlaneMeshComponent();
 	FVector2D screenLocation;
-	FVector cursorWorldLocation;
-	FVector cursorWorldDirection;
+	FVector cursorWorldLocation, cursorWorldDirection;
 
 	if (bUsingController)
-		screenLocation = FVector2D{ characterScreenLocation.X + controllerLookInput.X * 100.f, characterScreenLocation.Y + controllerLookInput.Y * 100.f };
+		screenLocation = characterScreenLocation + controllerLookInput * 100.f;
 	else
 		GetMousePosition(screenLocation.X, screenLocation.Y);
 

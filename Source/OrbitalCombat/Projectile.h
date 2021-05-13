@@ -42,6 +42,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float lifeSpan = 3.6f; // full rotation: 360 / rotationRate = Time
 
+	UPROPERTY(EditAnywhere)
+	float collisionDelay = 0.025f; // number of seconds before collisions are enabled upon spawning
+
 	FVector projectileDirection;
 
 	// Sphere collision component.
