@@ -70,8 +70,7 @@ void AProjectile::onBeginOverlap(UPrimitiveComponent * OverlappedComponent, AAct
 {
 	if (GetLifeSpan() < lifeSpan - 0.5f && Cast<APlayerCharacter>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ComponentHit: %s"), *OtherComp->GetName());
-		UE_LOG(LogTemp, Warning, TEXT("ActorHit: %s"), *OtherActor->GetActorLabel());
+		OtherActor->SetActorLocation(OtherActor->GetActorLocation() + OtherActor->GetActorUpVector() * 500.f);
 		Destroy();
 	}
 }

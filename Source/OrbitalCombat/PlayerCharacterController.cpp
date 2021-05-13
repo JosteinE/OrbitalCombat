@@ -64,15 +64,22 @@ void APlayerCharacterController::SetupInputComponent()
 void APlayerCharacterController::faceCursorLocation()
 {
 	FHitResult Hit;
-	if (bUsingController)
-	{
-		FVector2D screenLocation{ characterScreenLocation.X + controllerLookInput.X * 100.f, characterScreenLocation.Y + controllerLookInput.Y * 100.f };
-		GetHitResultAtScreenPosition(screenLocation, ECC_GameTraceChannel1, false, Hit);
-	}
-	else
-		GetHitResultUnderCursor(ECC_GameTraceChannel1, false, Hit);
+	UPrimitiveComponent* cursorCollider = Cast<APlayerCharacter>(GetPawn())->GetCursorPlaneMeshComponent();
+	FVector2D screenLocation;
+	FVector cursorWorldLocation;
+	FVector cursorWorldDirection;
 
-	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
+	if (bUsingController)
+		screenLocation = FVector2D{ characterScreenLocation.X + controllerLookInput.X * 100.f, characterScreenLocation.Y + controllerLookInput.Y * 100.f };
+	else
+		GetMousePosition(screenLocation.X, screenLocation.Y);
+
+	// Convert screen position to world position
+	DeprojectScreenPositionToWorld(screenLocation.X, screenLocation.Y, cursorWorldLocation, cursorWorldDirection);
+
+	// Making sure we're only colliding with the players belonging cursor collider
+	if(cursorCollider->LineTraceComponent(Hit, cursorWorldLocation, cursorWorldLocation + cursorWorldDirection * 10000.f, FCollisionQueryParams()))
+		Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
 }
 
 void APlayerCharacterController::drawForwardDebugLine()
@@ -102,12 +109,15 @@ void APlayerCharacterController::jump()
 
 void APlayerCharacterController::leftMouseButton()
 {
+	if(bUsingController)
+		fire();
 	bLMB = true;
 }
 
 void APlayerCharacterController::leftMouseButtonReleased()
 {
-	fire();
+	if(!bUsingController)
+		fire();
 	bLMB = false;
 }
 
@@ -163,7 +173,7 @@ void APlayerCharacterController::controllerLookY(float inputAxis)
 
 void APlayerCharacterController::controllerFaceButtonB()
 {
-	// Enables rotation via the right thumb stick
+	// Enables character rotation via the right thumb stick
 	bUsingController = true;
 	
 	ProjectWorldLocationToScreen(GetPawn()->GetActorLocation(), characterScreenLocation);
