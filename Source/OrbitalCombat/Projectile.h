@@ -28,7 +28,6 @@ public:
 
 	float distanceFromPlanet;
 
-
 	/** Returns the movementComponent subobject **/
 	FORCEINLINE class UOrbitalProjectileMovementComp* GetMovementComponent() { return projectileMovementComponent; }
 	/** Returns the gravityBody subobject **/

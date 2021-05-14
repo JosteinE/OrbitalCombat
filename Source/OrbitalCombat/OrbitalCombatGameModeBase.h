@@ -13,5 +13,5 @@ UCLASS()
 class ORBITALCOMBAT_API AOrbitalCombatGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
 };

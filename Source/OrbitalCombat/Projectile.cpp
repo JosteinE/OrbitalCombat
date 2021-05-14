@@ -71,6 +71,7 @@ void AProjectile::onBeginOverlap(UPrimitiveComponent * OverlappedComponent, AAct
 	if (GetLifeSpan() < lifeSpan - collisionDelay && Cast<APlayerCharacter>(OtherActor))
 	{
 		OtherActor->SetActorLocation(OtherActor->GetActorLocation() + OtherActor->GetActorUpVector() * 500.f);
+		Cast<APlayerCharacter>(OtherActor)->playerScore++;
 		Destroy();
 	}
 }

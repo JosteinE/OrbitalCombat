@@ -22,6 +22,9 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int playerScore = 0;
+
 	/** Returns playerCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return playerCameraComponent; }
 	/** Returns cameraBoom subobject **/
@@ -44,15 +47,15 @@ private:
 
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class UCameraComponent* playerCameraComponent;
+	class UCameraComponent* playerCameraComponent;
 
 	/** Camera boom positioning the camera above the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-		class USpringArmComponent* cameraBoom;
+	class USpringArmComponent* cameraBoom;
 
 	/** The players collision detector. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = collisionComponent, meta = (AllowPrivateAccess = "true"))
-		class UCapsuleComponent* playerCapsuleComponent;
+	class UCapsuleComponent* playerCapsuleComponent;
 
 	///** A decal that projects to the cursor location. */
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
