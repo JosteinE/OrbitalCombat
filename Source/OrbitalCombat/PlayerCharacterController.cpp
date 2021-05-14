@@ -59,6 +59,7 @@ void APlayerCharacterController::SetupInputComponent()
 	InputComponent->BindAction("Running", IE_Pressed, this, &APlayerCharacterController::startRunning);
 	InputComponent->BindAction("Running", IE_Released, this, &APlayerCharacterController::stopRunning);
 	InputComponent->BindAction("ControllerFaceButtonB", IE_Pressed, this, &APlayerCharacterController::controllerFaceButtonB);
+	InputComponent->BindAction("ControllerRTrigger", IE_Pressed, this, &APlayerCharacterController::controllerRTrigger);
 }
 
 void APlayerCharacterController::faceCursorLocation()
@@ -71,9 +72,15 @@ void APlayerCharacterController::faceCursorLocation()
 	if (bUsingController)
 	{
 		if (controllerLookInput.Size() > 0)
+		{
+			bReadyWeapon = true;
 			screenLocation = characterScreenLocation + controllerLookInput * 100.f;
+		}
 		else
+		{
+			bReadyWeapon = false;
 			return; // Prevents the character from resetting their rotation
+		}
 	}
 	else
 		GetMousePosition(screenLocation.X, screenLocation.Y);
@@ -113,16 +120,15 @@ void APlayerCharacterController::jump()
 
 void APlayerCharacterController::leftMouseButton()
 {
-	if(bUsingController)
-		fire();
 	bLMB = true;
+	bReadyWeapon = true;
 }
 
 void APlayerCharacterController::leftMouseButtonReleased()
 {
-	if(!bUsingController)
-		fire();
 	bLMB = false;
+	bReadyWeapon = false;
+	fire();
 }
 
 void APlayerCharacterController::startRunning()
@@ -181,4 +187,13 @@ void APlayerCharacterController::controllerFaceButtonB()
 	bUsingController = true;
 	
 	ProjectWorldLocationToScreen(GetPawn()->GetActorLocation(), characterScreenLocation);
+}
+
+void APlayerCharacterController::controllerRTrigger()
+{
+	if (bReadyWeapon)
+	{
+		fire();
+		bReadyWeapon = false;
+	}
 }

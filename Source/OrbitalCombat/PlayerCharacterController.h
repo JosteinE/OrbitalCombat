@@ -23,6 +23,9 @@ public:
 	bool bJumping{ false };
 
 	UPROPERTY(BlueprintReadOnly)
+	bool bReadyWeapon{ false };
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bLMB{ false };
 
 protected:
@@ -62,4 +65,5 @@ protected:
 	void controllerLookX(float inputAxis);
 	void controllerLookY(float inputAxis);
 	void controllerFaceButtonB();
+	void controllerRTrigger();
 };

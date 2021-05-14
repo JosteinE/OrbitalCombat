@@ -28,6 +28,7 @@ public:
 
 	float distanceFromPlanet;
 
+
 	/** Returns the movementComponent subobject **/
 	FORCEINLINE class UOrbitalProjectileMovementComp* GetMovementComponent() { return projectileMovementComponent; }
 	/** Returns the gravityBody subobject **/
@@ -43,7 +44,7 @@ public:
 	float lifeSpan = 3.6f; // full rotation: 360 / rotationRate = Time
 
 	UPROPERTY(EditAnywhere)
-	float collisionDelay = 0.025f; // number of seconds before collisions are enabled upon spawning
+	float collisionDelay = 0.05f; // number of seconds before collisions are enabled upon spawning
 
 	FVector projectileDirection;
 
