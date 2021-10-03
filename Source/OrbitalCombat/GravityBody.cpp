@@ -5,12 +5,9 @@
 #include "Misc/MessageDialog.h" // For displaying the error message before stopping the game
 #include "PlayerCharacterController.h"
 
-class UGravityAttractor;
-
 UGravityBody::UGravityBody()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
 UGravityBody::~UGravityBody()
@@ -22,30 +19,30 @@ void UGravityBody::BeginPlay()
 {
 	Super::BeginPlay();
 
-// Find the main planet actor and assign it to the gravityBody component
-	if (planet == nullptr)
-	{
-		for (TActorIterator<AActor> AActorItr(GetWorld()); AActorItr; ++AActorItr)
-		{
-			AActor * planetCheck = *AActorItr;
-			if (planetCheck->GetActorLabel() == "MainPlanet")
-			{
-				setPlanetToOrbit(planetCheck);
-				break;
-			}
-		}
-	}
-
-	if (planet != nullptr)
-	{
-		planetAttractor = planet->FindComponentByClass<UGravityAttractor>();
-	}
-	else
-	{
-		const FText Message = FText::FromString("Could not find a planet for the GravityBody component.");
-		FMessageDialog::Open(EAppMsgType::Ok, FText{ Message }); // Show message
-		//GetWorld()->GetFirstPlayerController()->ConsoleCommand("Quit");
-	}
+//// Find the main planet actor and assign it to the gravityBody component
+//	if (planet == nullptr)
+//	{
+//		for (TActorIterator<AActor> AActorItr(GetWorld()); AActorItr; ++AActorItr)
+//		{
+//			AActor * planetCheck = *AActorItr;
+//			if (planetCheck->GetActorLabel() == "MainPlanet")
+//			{
+//				setPlanetToOrbit(planetCheck);
+//				break;
+//			}
+//		}
+//	}
+//
+//	if (planet != nullptr)
+//	{
+//		planetAttractor = planet->FindComponentByClass<UGravityAttractor>();
+//	}
+//	else
+//	{
+//		const FText Message = FText::FromString("Could not find a planet for the GravityBody component.");
+//		FMessageDialog::Open(EAppMsgType::Ok, FText{ Message }); // Show message
+//		//GetWorld()->GetFirstPlayerController()->ConsoleCommand("Quit");
+//	}
 }
 
 
@@ -56,10 +53,13 @@ void UGravityBody::TickComponent(float DeltaTime, ELevelTick TickType, FActorCom
 
 }
 
-void UGravityBody::setPlanetToOrbit(AActor * inPlanet)
+void UGravityBody::setPlanetToOrbit(AActor * inPlanet, UGravityAttractor* gravityAttractor)
 {
-	if (inPlanet)
+	if (inPlanet && gravityAttractor)
+	{
 		planet = inPlanet;
+		planetAttractor = gravityAttractor;	
+	}
 	else
 		UE_LOG(LogTemp, Warning, TEXT("Attempted to assign a nullptr as planet in a GravityBody component."));
 }

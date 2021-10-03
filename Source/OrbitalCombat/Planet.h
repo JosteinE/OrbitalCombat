@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "ProceduralMeshComponent.h" // To include this i had to: add it to .Build.cs then generate files using .Uproject
+#include "GravityAttractor.h"
 #include "Planet.generated.h"
 
 UCLASS()
@@ -16,9 +17,12 @@ public:
 	// Sets default values for this actor's properties
 	APlanet();
 
+	UGravityAttractor* getGravityAttractor();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 	UPROPERTY(EditAnywhere)
 	UProceduralMeshComponent * planetMesh;
@@ -29,7 +33,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	bool spherical = true;
 
+	UPROPERTY(EditAnywhere)
+	UGravityAttractor* GravityAttractor;
+
 private:
 	void constructPlanet(int res, bool bSphere = true);
-	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent); //override
 };

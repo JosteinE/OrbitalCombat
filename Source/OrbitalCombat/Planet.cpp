@@ -11,6 +11,13 @@ APlanet::APlanet()
 	RootComponent = planetMesh;
 
 	constructPlanet(resolution, spherical);
+
+	GravityAttractor = CreateDefaultSubobject<UGravityAttractor>("GravityAttractor");
+}
+
+UGravityAttractor * APlanet::getGravityAttractor()
+{
+	return GravityAttractor;
 }
 
 // Called when the game starts or when spawned

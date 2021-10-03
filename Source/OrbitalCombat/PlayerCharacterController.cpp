@@ -144,7 +144,7 @@ void APlayerCharacterController::stopRunning()
 void APlayerCharacterController::fire()
 {
 	FActorSpawnParameters spawnParams;
-	spawnParams.Owner = this;
+	spawnParams.Owner = Cast<APlayerCharacter>(GetPawn());
 	spawnParams.Instigator = GetInstigator();
 
 	FVector projectileSpawnLoc = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
@@ -155,7 +155,7 @@ void APlayerCharacterController::fire()
 	FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
 
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-	projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet);
+	//projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)

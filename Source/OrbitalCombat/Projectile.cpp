@@ -41,7 +41,6 @@ AProjectile::AProjectile()
 	{
 		gravityBody = CreateDefaultSubobject<UGravityBody>("GravityBody");
 	}
-	
 	InitialLifeSpan = lifeSpan; // Destroy projectile after X seconds
 }
 
@@ -53,10 +52,12 @@ void AProjectile::BeginPlay()
 	// Bind delegate
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::onBeginOverlap);
 
+	if (GetOwner() && (!gravityBody->planet || !gravityBody->planetAttractor))
+		gravityBody->setPlanetToOrbit(Cast<APlayerCharacter>(GetOwner())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetOwner())->GetGravityBody()->planetAttractor);
 	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
-// Called every frame
+// Called every framew
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

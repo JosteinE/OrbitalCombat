@@ -43,7 +43,7 @@ public:
 	float lifeSpan = 3.6f; // full rotation: 360 / rotationRate = Time
 
 	UPROPERTY(EditAnywhere)
-	float collisionDelay = 0.05f; // number of seconds before collisions are enabled upon spawning
+	float collisionDelay = 0.1f; // number of seconds before collisions are enabled upon spawning to avoid killing the shooter
 
 	FVector projectileDirection;
 

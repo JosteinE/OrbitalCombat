@@ -29,7 +29,7 @@ public:
 
 	UGravityAttractor* planetAttractor{ nullptr };
 
-	void setPlanetToOrbit(AActor *inPlanet);
+	void setPlanetToOrbit(AActor *inPlanet, UGravityAttractor* gravityAttractor);
 	void rotateToSurface();
 	void pullToSurface(float deltaTime, bool * bGrounded = nullptr);
 	void rotateMeshToSurface();

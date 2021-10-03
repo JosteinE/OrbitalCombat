@@ -25,6 +25,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int playerScore = 0;
 
+	/** Returns playerController subobject **/
+	//FORCEINLINE class APlayerCharacterController* GetController() const { return playerController; }
 	/** Returns playerCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetTopDownCameraComponent() const { return playerCameraComponent; }
 	/** Returns cameraBoom subobject **/
@@ -44,6 +46,10 @@ public:
 	//FORCEINLINE class UDecalComponent* GetCursorToWorld() { return cursorToWorld; }
 
 private:
+
+	/** Input controller for the player */
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = playerController, meta = (AllowPrivateAccess = "true"))
+	//class APlayerCharacterController* playerController;
 
 	/** Top down camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

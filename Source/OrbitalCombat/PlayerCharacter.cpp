@@ -24,6 +24,11 @@ APlayerCharacter::APlayerCharacter()
 	skeletalMeshComponent->SetEnableGravity(false);
 	skeletalMeshComponent->SetupAttachment(RootComponent);
 
+	//Create the playerController
+	//playerController = CreateDefaultSubobject<APlayerCharacterController>("PlayerControllerComponent");
+	//playerController->SetPawn(this);
+	//Controller = playerController;
+
 	// Create a movement component for the pawn
 	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");
 
@@ -60,6 +65,7 @@ APlayerCharacter::APlayerCharacter()
 	cursorPlaneMesh->SetCollisionProfileName("CursorCollider");
 	cursorPlaneMesh->SetEnableGravity(false);
 	cursorPlaneMesh->SetCastShadow(false);
+	cursorPlaneMesh->SetHiddenInGame(true);
 	cursorPlaneMesh->SetupAttachment(RootComponent);
 
 	// Add the Gravity Body
