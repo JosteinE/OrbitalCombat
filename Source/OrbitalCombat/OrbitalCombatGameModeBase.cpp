@@ -3,7 +3,7 @@
 #include "OrbitalCombatGameModeBase.h"
 #include "Kismet/GameplayStatics.h" // Open level
 #include "Engine/Engine.h" // for GEngine warnings
-#include "UObject/ConstructorHelpers.h"
+#include "Engine/LocalPlayer.h"
 
 AOrbitalCombatGameModeBase::AOrbitalCombatGameModeBase()
 {
@@ -31,10 +31,25 @@ void AOrbitalCombatGameModeBase::BeginPlay()
 	planet = GetWorld()->SpawnActor<APlanet>(APlanet::StaticClass(), FVector{ 0.f, 0.f, 0.f }, FRotator{ 0.f, 0.f, 0.f }, planetSpawnParams);
 	planet->SetActorScale3D(FVector{ 10.f, 10.f, 10.f });
 
-	// Spawn player
-	APlayerCharacter* mainPlayer = addPlayer(NULL, true);
+	// Spawn primary player
+	APlayerCharacter* mainPlayer = addPlayer();
 	Controller = GetWorld()->GetFirstPlayerController();
 	Controller->Possess(mainPlayer);
+
+	// Spawn local players
+	if (GetNumPlayers() > 1)
+	{
+		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+		{
+			APlayerController* PlayerController = Iterator->Get();
+			if (PlayerController != Controller)
+			{
+				APlayerCharacter* localPlayer = addPlayer();
+				Cast<APlayerCharacterController>(PlayerController)->bUsingController = true;
+				PlayerController->Possess(localPlayer);
+			}
+		}
+	}
 }
 
 
@@ -42,14 +57,8 @@ void AOrbitalCombatGameModeBase::EndGame()
 {
 }
 
-APlayerCharacter* AOrbitalCombatGameModeBase::addPlayer(APlayerCharacter* player, bool bIsLocal)
+APlayerCharacter* AOrbitalCombatGameModeBase::addPlayer()
 {
-	if (bIsLocal)
-		numLocalPlayers++;
-	numPlayers++;
-
-	if (!player)
-	{
 		TSubclassOf<APlayerCharacter> pawnClass = LoadObject<UBlueprint>(NULL, TEXT("/Game/Blueprints/PlayerCharacter_BP"))->GeneratedClass;
 
 		UWorld* World = GetWorld();
@@ -61,14 +70,5 @@ APlayerCharacter* AOrbitalCombatGameModeBase::addPlayer(APlayerCharacter* player
 		newPlayer->GetGravityBody()->setPlanetToOrbit(planet, planet->getGravityAttractor());
 		newPlayer->GetMovementComponent()->SetComponentTickEnabled(true);
 
-		UE_LOG(LogTemp, Warning, TEXT("Player: %i generated"), numPlayers);
 		return newPlayer;
-	}
-
-	//if (!player)
-	//	player = NewObject<APlayerCharacter>(APlayerCharacter::StaticClass(), TEXT("playerCharacter"));
-
-	//player->GetGravityBody()->setPlanetToOrbit(planet, planet->getGravityAttractor());
-
-	return nullptr;
 }

@@ -27,10 +27,8 @@ private:
 
 public:
 	void EndGame();
-	APlayerCharacter* addPlayer(APlayerCharacter* player = nullptr, bool bIsLocal = true);
+	APlayerCharacter* addPlayer();
 
-	int numPlayers = 0;
-	int numLocalPlayers = 0;
 	bool bMouseInUse = false;
 	FVector playerSpawnOffset{0.f, 0.f, 600.f};
 };

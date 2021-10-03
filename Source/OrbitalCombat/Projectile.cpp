@@ -57,7 +57,7 @@ void AProjectile::BeginPlay()
 	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
-// Called every framew
+// Called every frame
 void AProjectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

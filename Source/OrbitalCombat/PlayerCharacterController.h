@@ -28,6 +28,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool bLMB{ false };
 
+	bool bUsingController{ false };
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,8 +40,6 @@ protected:
 	FVector directionInput{ 0,0,0 };
 	// Determined by the right thumb stick
 	FVector2D controllerLookInput{ 0,0 };
-
-	bool bUsingController{ false };
 
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
