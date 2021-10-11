@@ -21,9 +21,11 @@ public:
 
 private:
 	void BeginPlay() override;
+	void PostLogin(APlayerController* NewPlayer) override;
 
 	APlanet* planet;
 	APlayerController* Controller;
+	bool worldGenerated = false;
 
 public:
 	void EndGame();

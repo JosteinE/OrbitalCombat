@@ -13,6 +13,7 @@ APlayerCharacterController::APlayerCharacterController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+	bAllowTickBeforeBeginPlay = false;
 }
 
 void APlayerCharacterController::BeginPlay()
@@ -155,7 +156,7 @@ void APlayerCharacterController::fire()
 	FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
 
 	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-	//projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
+	projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)

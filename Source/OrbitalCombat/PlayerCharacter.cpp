@@ -31,6 +31,8 @@ APlayerCharacter::APlayerCharacter()
 
 	// Create a movement component for the pawn
 	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");
+	movementComponent->SetComponentTickEnabled(false);
+	movementComponent->PrimaryComponentTick.SetTickFunctionEnable(false);
 
 	// Create a camera boom...
 	cameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));

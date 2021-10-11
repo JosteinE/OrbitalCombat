@@ -7,25 +7,17 @@
 
 AOrbitalCombatGameModeBase::AOrbitalCombatGameModeBase()
 {
-	//DefaultPawnClass = APlayerCharacter::StaticClass();
-
-	//If you need multiple classes, look into overriding the GetDefaultPawnClassForController() function in C++ / Blueprint.
-	//static ConstructorHelpers::FObjectFinder<UClass> BP_DefaultPawnClass(TEXT("/Game/Blueprints/PlayerCharacter_BP"));
-	//DefaultPawnClass = (BP_DefaultPawnClass.Object != nullptr) ? BP_DefaultPawnClass.Object : APlayerCharacter::StaticClass();
 	PlayerControllerClass = APlayerCharacterController::StaticClass();
 }
 
 void AOrbitalCombatGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	//FInputModeGameOnly InputMode;
 	//Controller->SetInputMode(InputMode);
 
 	//UGameplayStatics::OpenLevel(this, "MainMap", true);
 
-	// Generate the planet
-	//planet = NewObject<APlanet>(APlanet::StaticClass(), TEXT("Planet"));
 	FActorSpawnParameters planetSpawnParams;
 	planetSpawnParams.Owner = this;
 	planet = GetWorld()->SpawnActor<APlanet>(APlanet::StaticClass(), FVector{ 0.f, 0.f, 0.f }, FRotator{ 0.f, 0.f, 0.f }, planetSpawnParams);
@@ -36,19 +28,31 @@ void AOrbitalCombatGameModeBase::BeginPlay()
 	Controller = GetWorld()->GetFirstPlayerController();
 	Controller->Possess(mainPlayer);
 
+	worldGenerated = true;
+
 	// Spawn local players
-	if (GetNumPlayers() > 1)
+	//if (GetNumPlayers() > 1)
+	//{
+	//	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
+	//	{
+	//		APlayerController* PlayerController = Iterator->Get();
+	//		if (PlayerController != Controller)
+	//		{
+	//			APlayerCharacter* localPlayer = addPlayer();
+	//			Cast<APlayerCharacterController>(PlayerController)->bUsingController = true;
+	//			PlayerController->Possess(localPlayer);
+	//		}
+	//	}
+	//}
+}
+
+void AOrbitalCombatGameModeBase::PostLogin(APlayerController * NewPlayer)
+{
+	if (worldGenerated)
 	{
-		for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)
-		{
-			APlayerController* PlayerController = Iterator->Get();
-			if (PlayerController != Controller)
-			{
-				APlayerCharacter* localPlayer = addPlayer();
-				Cast<APlayerCharacterController>(PlayerController)->bUsingController = true;
-				PlayerController->Possess(localPlayer);
-			}
-		}
+		APlayerCharacter* newPlayerCharacter = addPlayer();
+		Cast<APlayerCharacterController>(NewPlayer)->bUsingController = true;
+		NewPlayer->Possess(newPlayerCharacter);
 	}
 }
 
