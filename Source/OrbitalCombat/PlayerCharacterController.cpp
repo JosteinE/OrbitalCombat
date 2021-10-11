@@ -155,8 +155,29 @@ void APlayerCharacterController::fire()
 
 	FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
 
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-	projectile->GetGravityBody()->setPlanetToOrbit(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
+	if(!GetWorld()->IsServer())
+		Server_Fire(projectileSpawnLoc, projectileSpawnRot);
+	else
+	{
+		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
+		projectile->setPlanet(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
+		projectile->PrimaryActorTick.SetTickFunctionEnable(true);
+	}
+}
+
+bool APlayerCharacterController::Server_Fire_Validate(FVector projectileLocation, FRotator projectileRotation)
+{
+	return true;
+}
+
+void APlayerCharacterController::Server_Fire_Implementation(FVector projectileLocation, FRotator projectileRotation)
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = Cast<APlayerCharacter>(GetPawn());
+	spawnParams.Instigator = GetInstigator();
+	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileLocation, projectileRotation, spawnParams);
+	projectile->setPlanet(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
+	projectile->PrimaryActorTick.SetTickFunctionEnable(true);
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)
@@ -196,4 +217,9 @@ void APlayerCharacterController::controllerRTrigger()
 		fire();
 		bReadyWeapon = false;
 	}
+}
+
+void APlayerCharacterController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }

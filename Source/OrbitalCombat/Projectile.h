@@ -9,6 +9,8 @@
 #include "GravityBody.h"
 #include "Projectile.generated.h"
 
+class UGravityAttractor;
+
 UCLASS()
 class ORBITALCOMBAT_API AProjectile : public AActor
 {
@@ -17,6 +19,8 @@ class ORBITALCOMBAT_API AProjectile : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AProjectile();
+
+	void setPlanet(AActor* inPlanet, UGravityAttractor* inAttractor);
 
 protected:
 	// Called when the game starts or when spawned

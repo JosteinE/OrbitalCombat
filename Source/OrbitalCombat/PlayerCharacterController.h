@@ -13,6 +13,8 @@ class APlayerCharacterController : public APlayerController
 public:
 	APlayerCharacterController();
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> & OutLifetimeProps) const override;
+
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMoving{ false };
 
@@ -60,6 +62,11 @@ protected:
 	void startRunning();
 	void stopRunning();
 	void fire();
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_Fire(FVector projectileLocation, FRotator projectileRotation);
+	bool Server_Fire_Validate(FVector projectileLocation, FRotator projectileRotation);
+	void Server_Fire_Implementation(FVector projectileLocation, FRotator projectileRotation);
 
 	//Controller specific input
 	void controllerLookX(float inputAxis);

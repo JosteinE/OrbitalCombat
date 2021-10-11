@@ -22,13 +22,18 @@ void AOrbitalCombatGameModeBase::BeginPlay()
 	planetSpawnParams.Owner = this;
 	planet = GetWorld()->SpawnActor<APlanet>(APlanet::StaticClass(), FVector{ 0.f, 0.f, 0.f }, FRotator{ 0.f, 0.f, 0.f }, planetSpawnParams);
 	planet->SetActorScale3D(FVector{ 10.f, 10.f, 10.f });
+	planet->SetReplicates(true);
+	planet->bNetLoadOnClient = true;
 
 	// Spawn primary player
 	APlayerCharacter* mainPlayer = addPlayer();
 	Controller = GetWorld()->GetFirstPlayerController();
+	mainPlayer->GetGravityBody()->setPlanetToOrbit(planet, planet->getGravityAttractor());
+	mainPlayer->GetMovementComponent()->SetComponentTickEnabled(true);
 	Controller->Possess(mainPlayer);
 
-	worldGenerated = true;
+	if(mainPlayer->GetGravityBody()->planet)
+		UE_LOG(LogTemp, Warning, TEXT("HOST was assigned the planet"));
 
 	// Spawn local players
 	//if (GetNumPlayers() > 1)
@@ -48,14 +53,30 @@ void AOrbitalCombatGameModeBase::BeginPlay()
 
 void AOrbitalCombatGameModeBase::PostLogin(APlayerController * NewPlayer)
 {
-	if (worldGenerated)
+	if (HasActorBegunPlay())
 	{
 		APlayerCharacter* newPlayerCharacter = addPlayer();
-		Cast<APlayerCharacterController>(NewPlayer)->bUsingController = true;
 		NewPlayer->Possess(newPlayerCharacter);
+		AssignPlanet(NewPlayer);
+		newPlayerCharacter->GetMovementComponent()->SetComponentTickEnabled(true);
 	}
 }
 
+void AOrbitalCombatGameModeBase::AssignPlanet(APlayerController * inPlayer)
+{
+	Client_AssignPlanet(inPlayer, planet);
+	if (Cast<APlayerCharacter>(inPlayer->GetPawn())->GetGravityBody()->planet)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GUEST player was assigned the planet"));
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("GUEST player FAILED to assign the planet"));
+}
+
+void AOrbitalCombatGameModeBase::Client_AssignPlanet_Implementation(APlayerController * inPlayer, APlanet * inPlanet)
+{
+	Cast<APlayerCharacter>(inPlayer->GetPawn())->GetGravityBody()->setPlanetToOrbit(inPlanet, inPlanet->getGravityAttractor());
+}
 
 void AOrbitalCombatGameModeBase::EndGame()
 {
@@ -70,9 +91,5 @@ APlayerCharacter* AOrbitalCombatGameModeBase::addPlayer()
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		APlayerCharacter* newPlayer = World->SpawnActor<APlayerCharacter>(pawnClass, planet->GetActorLocation() + playerSpawnOffset, FRotator{0,0,0}, SpawnParams);
-
-		newPlayer->GetGravityBody()->setPlanetToOrbit(planet, planet->getGravityAttractor());
-		newPlayer->GetMovementComponent()->SetComponentTickEnabled(true);
-
 		return newPlayer;
 }

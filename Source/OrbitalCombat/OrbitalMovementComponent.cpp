@@ -19,7 +19,6 @@ void UOrbitalMovementComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PrimaryComponentTick.bStartWithTickEnabled = false;
 }
 
 
@@ -47,6 +46,7 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 	moveDirection.Normalize();
 
 	//UE_LOG(LogTemp, Warning, TEXT("MoveDirection { %f, %f, %f }"), moveDirection.X, moveDirection.Y, moveDirection.Z);
+	//GetPawnOwner()->AddMovementInput(moveDirection, moveSpeed, true);
 	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
 }
 

@@ -22,10 +22,14 @@ public:
 private:
 	void BeginPlay() override;
 	void PostLogin(APlayerController* NewPlayer) override;
+	void AssignPlanet(APlayerController* inPlayer);
+
+	UFUNCTION(Client, Reliable)
+	void Client_AssignPlanet(APlayerController* inPlayer, APlanet* inPlanet);
+	void Client_AssignPlanet_Implementation(APlayerController* inPlayer, APlanet* inPlanet);
 
 	APlanet* planet;
 	APlayerController* Controller;
-	bool worldGenerated = false;
 
 public:
 	void EndGame();

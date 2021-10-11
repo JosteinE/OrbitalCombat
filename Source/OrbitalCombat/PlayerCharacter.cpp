@@ -24,11 +24,6 @@ APlayerCharacter::APlayerCharacter()
 	skeletalMeshComponent->SetEnableGravity(false);
 	skeletalMeshComponent->SetupAttachment(RootComponent);
 
-	//Create the playerController
-	//playerController = CreateDefaultSubobject<APlayerCharacterController>("PlayerControllerComponent");
-	//playerController->SetPawn(this);
-	//Controller = playerController;
-
 	// Create a movement component for the pawn
 	movementComponent = CreateDefaultSubobject<UOrbitalMovementComponent>("MovementComponent");
 	movementComponent->SetComponentTickEnabled(false);
@@ -56,9 +51,6 @@ APlayerCharacter::APlayerCharacter()
 	//cursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	//cursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 
-	// Activate ticking in order to update the cursor every frame.
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.bStartWithTickEnabled = true;
 
 	// Add the cursor plane mesh
 	cursorPlaneMesh = CreateDefaultSubobject<UStaticMeshComponent>("cursorPlaneMeshComponent");
@@ -72,12 +64,18 @@ APlayerCharacter::APlayerCharacter()
 
 	// Add the Gravity Body
 	gravityBody = CreateDefaultSubobject<UGravityBody>("GravityBody");
+
+	// Activate ticking in order to update the cursor every frame.
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = true;
+
+	// Online configurations
+	SetReplicates(true);
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 
 }
 

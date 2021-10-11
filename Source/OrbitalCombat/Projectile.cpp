@@ -5,6 +5,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
 #include "PlayerCharacter.h"
+#include "GravityAttractor.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -42,6 +43,16 @@ AProjectile::AProjectile()
 		gravityBody = CreateDefaultSubobject<UGravityBody>("GravityBody");
 	}
 	InitialLifeSpan = lifeSpan; // Destroy projectile after X seconds
+	SetReplicates(true);
+
+	bAllowTickBeforeBeginPlay = false;
+	PrimaryActorTick.bStartWithTickEnabled = false;
+}
+
+void AProjectile::setPlanet(AActor * inPlanet, UGravityAttractor* inAttractor)
+{
+	gravityBody->setPlanetToOrbit(inPlanet, inAttractor);
+	distanceFromPlanet = FVector::Distance(inPlanet->GetActorLocation(), GetActorLocation());
 }
 
 // Called when the game starts or when spawned
@@ -51,10 +62,6 @@ void AProjectile::BeginPlay()
 
 	// Bind delegate
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AProjectile::onBeginOverlap);
-
-	if (GetOwner() && (!gravityBody->planet || !gravityBody->planetAttractor))
-		gravityBody->setPlanetToOrbit(Cast<APlayerCharacter>(GetOwner())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetOwner())->GetGravityBody()->planetAttractor);
-	distanceFromPlanet = FVector::Distance(GetGravityBody()->planet->GetActorLocation(), GetActorLocation());
 }
 
 // Called every frame
