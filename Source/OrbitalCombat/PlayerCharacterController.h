@@ -13,8 +13,6 @@ class APlayerCharacterController : public APlayerController
 public:
 	APlayerCharacterController();
 
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> & OutLifetimeProps) const override;
-
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsMoving{ false };
 

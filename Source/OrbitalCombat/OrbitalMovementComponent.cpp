@@ -9,6 +9,7 @@ UOrbitalMovementComponent::UOrbitalMovementComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bStartWithTickEnabled = false;
 	bAutoActivate = false;
 	bTickBeforeOwner = false;
 }
@@ -47,6 +48,21 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 
 	//UE_LOG(LogTemp, Warning, TEXT("MoveDirection { %f, %f, %f }"), moveDirection.X, moveDirection.Y, moveDirection.Z);
 	//GetPawnOwner()->AddMovementInput(moveDirection, moveSpeed, true);
+	if (GetWorld()->IsServer())
+		GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
+	else
+	{
+		Server_MoveCharacter(moveDirection, moveSpeed, deltaTime);
+	}
+}
+
+bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Server_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
+{
 	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
 }
 

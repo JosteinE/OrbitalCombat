@@ -22,6 +22,8 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 
+	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty> & OutLifetimeProps) const override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int playerScore = 0;
 
@@ -72,7 +74,7 @@ private:
 	class USkeletalMeshComponent* skeletalMeshComponent;
 
 	/** Movement controller for the player */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = movementComponent, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = movementComponent, meta = (AllowPrivateAccess = "true"))
 	class UOrbitalMovementComponent* movementComponent;
 
 	/** Gravity body - Rotates (and pulls) owner towards a target */

@@ -31,7 +31,12 @@ public:
 
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
 	void inputToMovement(FVector input, bool bJumping, float deltaTime);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_MoveCharacter(FVector moveDirection, float inMoveSpeed, float deltaTime);
+	bool Server_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime);
+	void Server_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime);
+
 	void jump();
 };

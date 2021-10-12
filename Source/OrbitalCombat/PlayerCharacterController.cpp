@@ -218,8 +218,3 @@ void APlayerCharacterController::controllerRTrigger()
 		bReadyWeapon = false;
 	}
 }
-
-void APlayerCharacterController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-}

@@ -8,6 +8,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/Material.h"
 #include "GameFramework/PawnMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -71,6 +72,8 @@ APlayerCharacter::APlayerCharacter()
 
 	// Online configurations
 	SetReplicates(true);
+	SetReplicateMovement(true);
+	GetMovementComponent()->SetIsReplicated(true);
 }
 
 void APlayerCharacter::BeginPlay()
@@ -95,4 +98,10 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 	//		cursorToWorld->SetWorldRotation(CursorR);
 	//	}
 	//}
+}
+
+void APlayerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(APlayerCharacter, movementComponent);
 }
