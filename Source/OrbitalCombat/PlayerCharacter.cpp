@@ -106,4 +106,5 @@ void APlayerCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(APlayerCharacter, movementComponent);
+	DOREPLIFETIME(APlayerCharacter, gravityBody);
 }

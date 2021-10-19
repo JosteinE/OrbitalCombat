@@ -171,7 +171,6 @@ void APlayerCharacterController::fire()
 	else
 	{
 		Server_Fire(projectileSpawnLoc, projectileSpawnRot);
-		//Multi_Fire(projectileSpawnLoc, projectileSpawnRot);
 	}
 }
 

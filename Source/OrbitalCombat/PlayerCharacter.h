@@ -78,7 +78,7 @@ private:
 	class UOrbitalMovementComponent* movementComponent;
 
 	/** Gravity body - Rotates (and pulls) owner towards a target */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = gravityBody, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(Replicated, VisibleAnywhere, BlueprintReadOnly, Category = gravityBody, meta = (AllowPrivateAccess = "true"))
 	class UGravityBody *gravityBody;
 
 	/** Mesh that will collide with the cursor */

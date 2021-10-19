@@ -7,7 +7,7 @@
 
 UGravityBody::UGravityBody()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 UGravityBody::~UGravityBody()

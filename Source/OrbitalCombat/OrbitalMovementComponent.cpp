@@ -67,8 +67,6 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 	{
 		// Remote client moves and sends the transformation to the server
 		Server_MoveCharacter(moveDirection, moveSpeed, deltaTime);
-		// Broadcasted movement to all remote clients
-		Multi_MoveCharacter(moveDirection, moveSpeed, deltaTime);
 	}
 }
 
@@ -96,7 +94,8 @@ bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirect
 
 void UOrbitalMovementComponent::Server_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
 {
-	MoveCharacter(moveDirection, moveSpeed, deltaTime);
+	// Broadcasted movement to all remote clients
+	Multi_MoveCharacter(moveDirection, moveSpeed, deltaTime);
 }
 
 bool UOrbitalMovementComponent::Multi_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)

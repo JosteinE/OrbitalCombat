@@ -51,4 +51,3 @@ void APlanet::PostEditChangeProperty(FPropertyChangedEvent & PropertyChangedEven
 		RegisterAllComponents(); // Upon reconstruction, the component will have to be re-registered in order to be visible again
 	}
 }
-
