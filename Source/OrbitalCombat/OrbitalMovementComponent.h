@@ -48,9 +48,9 @@ public:
 	void Multi_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime);
 
 	UFUNCTION(Client, Reliable, WithValidation)
-	void Server_RotateToSurface();
-	bool Server_RotateToSurface_Validate();
-	void Server_RotateToSurface_Implementation();
+	void Client_RotateToSurface();
+	bool Client_RotateToSurface_Validate();
+	void Client_RotateToSurface_Implementation();
 
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
 	void Multi_RotateToSurface();
@@ -58,9 +58,9 @@ public:
 	void Multi_RotateToSurface_Implementation();
 
 	UFUNCTION(Client, Reliable, WithValidation)
-	void Server_PullToSurface(float deltaTime);
-	bool Server_PullToSurface_Validate(float deltaTime);
-	void Server_PullToSurface_Implementation(float deltaTime);
+	void Client_PullToSurface(float deltaTime);
+	bool Client_PullToSurface_Validate(float deltaTime);
+	void Client_PullToSurface_Implementation(float deltaTime);
 
 	UFUNCTION(NetMulticast, Reliable, WithValidation)
 	void Multi_PullToSurface(float deltaTime);

@@ -35,11 +35,11 @@ void UOrbitalMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	}
 	else
 	{
-		Server_RotateToSurface();
-		Multi_RotateToSurface();
+		Client_RotateToSurface();
+		//Multi_RotateToSurface();
 
-		Server_PullToSurface(DeltaTime);
-		Multi_PullToSurface(DeltaTime);
+		Client_PullToSurface(DeltaTime);
+		//Multi_PullToSurface(DeltaTime);
 	}
 
 }
@@ -109,12 +109,12 @@ void UOrbitalMovementComponent::Multi_MoveCharacter_Implementation(FVector moveD
 	MoveCharacter(moveDirection, moveSpeed, deltaTime);
 }
 
-bool UOrbitalMovementComponent::Server_RotateToSurface_Validate()
+bool UOrbitalMovementComponent::Client_RotateToSurface_Validate()
 {
 	return true;
 }
 
-void UOrbitalMovementComponent::Server_RotateToSurface_Implementation()
+void UOrbitalMovementComponent::Client_RotateToSurface_Implementation()
 {
 	RotateToSurface();
 }
@@ -129,12 +129,12 @@ void UOrbitalMovementComponent::Multi_RotateToSurface_Implementation()
 	RotateToSurface();
 }
 
-bool UOrbitalMovementComponent::Server_PullToSurface_Validate(float deltaTime)
+bool UOrbitalMovementComponent::Client_PullToSurface_Validate(float deltaTime)
 {
 	return true;
 }
 
-void UOrbitalMovementComponent::Server_PullToSurface_Implementation(float deltaTime)
+void UOrbitalMovementComponent::Client_PullToSurface_Implementation(float deltaTime)
 {
 	PullToSurface(deltaTime);
 }
