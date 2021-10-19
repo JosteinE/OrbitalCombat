@@ -74,6 +74,8 @@ APlayerCharacter::APlayerCharacter()
 	SetReplicates(true);
 	SetReplicateMovement(true);
 	GetMovementComponent()->SetIsReplicated(true);
+	GetMeshComponent()->SetIsReplicated(true);
+	GetGravityBody()->SetIsReplicated(true);
 }
 
 void APlayerCharacter::BeginPlay()

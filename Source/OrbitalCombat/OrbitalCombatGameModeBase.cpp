@@ -35,7 +35,7 @@ void AOrbitalCombatGameModeBase::BeginPlay()
 	if(mainPlayer->GetGravityBody()->planet)
 		UE_LOG(LogTemp, Warning, TEXT("HOST was assigned the planet"));
 
-	// Spawn local players
+	// Spawn local players MIGHT BE USEFUL FOR SPAWNING PLAYERS FROM LOBBY LATER
 	//if (GetNumPlayers() > 1)
 	//{
 	//	for (FConstPlayerControllerIterator Iterator = GetWorld()->GetPlayerControllerIterator(); Iterator; ++Iterator)

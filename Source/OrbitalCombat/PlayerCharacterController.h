@@ -45,6 +45,8 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	void faceCursorLocation();
+	void setToFaceCursorLocation(FVector * inImpactPoint);
+
 	void drawForwardDebugLine();
 
 	// Navigate player using the WASD buttons
@@ -60,6 +62,17 @@ protected:
 	void startRunning();
 	void stopRunning();
 	void fire();
+	void spawnProjectile(FVector *projectileLocation, FRotator *projectileRotation);
+
+	UFUNCTION(Server, Reliable, WithValidation)
+	void Server_FaceCursorLocation(FVector inImpactPoint);
+	bool Server_FaceCursorLocation_Validate(FVector inImpactPoint);
+	void Server_FaceCursorLocation_Implementation(FVector inImpactPoint);
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	void Multi_FaceCursorLocation(FVector inImpactPoint);
+	bool Multi_FaceCursorLocation_Validate(FVector inImpactPoint);
+	void Multi_FaceCursorLocation_Implementation(FVector inImpactPoint);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_Fire(FVector projectileLocation, FRotator projectileRotation);

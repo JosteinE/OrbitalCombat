@@ -66,12 +66,47 @@ void UGravityBody::setPlanetToOrbit(AActor * inPlanet, UGravityAttractor* gravit
 
 void UGravityBody::rotateToSurface()
 {
-	planetAttractor->RotateToSurface(GetOwner());
+	if (GetWorld()->IsServer())
+	{
+		planetAttractor->RotateToSurface(GetOwner());
+	}
+	else
+	{
+		Client_RotateToSurface();
+	}
 }
 
 void UGravityBody::pullToSurface(float deltaTime, bool * bGrounded)
 {
-	planetAttractor->Attract(GetOwner(), deltaTime, bGrounded);
+	// Temp removed bGrounded from functions. RPC calls cant have ptrs
+	if (GetWorld()->IsServer())
+	{
+		planetAttractor->Attract(GetOwner(), deltaTime);
+	}
+	else
+	{
+		Client_PullToSurface(deltaTime);
+	}
+}
+
+bool UGravityBody::Client_RotateToSurface_Validate()
+{
+	return true;
+}
+
+void UGravityBody::Client_RotateToSurface_Implementation()
+{
+	planetAttractor->RotateToSurface(GetOwner());
+}
+
+bool UGravityBody::Client_PullToSurface_Validate(float deltaTime)
+{
+	return true;
+}
+
+void UGravityBody::Client_PullToSurface_Implementation(float deltaTime)
+{
+	planetAttractor->Attract(GetOwner(), deltaTime);
 }
 
 void UGravityBody::rotateMeshToSurface()
@@ -83,4 +118,3 @@ void UGravityBody::pullMeshToSurface(float deltaTime, bool * bGrounded)
 {
 	planetAttractor->AttractMesh(GetOwner()->FindComponentByClass<UStaticMeshComponent>(), deltaTime, bGrounded);
 }
-

@@ -90,8 +90,23 @@ void APlayerCharacterController::faceCursorLocation()
 	DeprojectScreenPositionToWorld(screenLocation.X, screenLocation.Y, cursorWorldLocation, cursorWorldDirection);
 
 	// Making sure we're only colliding with the players belonging cursor collider
-	if(cursorCollider->LineTraceComponent(Hit, cursorWorldLocation, cursorWorldLocation + cursorWorldDirection * 10000.f, FCollisionQueryParams()))
-		Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(Hit.ImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
+	if (cursorCollider->LineTraceComponent(Hit, cursorWorldLocation, cursorWorldLocation + cursorWorldDirection * 10000.f, FCollisionQueryParams()))
+	{
+		if (GetWorld()->IsServer())
+		{
+			setToFaceCursorLocation(&Hit.ImpactPoint);
+		}
+		else
+		{
+			Server_FaceCursorLocation(Hit.ImpactPoint);
+			Multi_FaceCursorLocation(Hit.ImpactPoint);
+		}
+	}
+}
+
+void APlayerCharacterController::setToFaceCursorLocation(FVector * inImpactPoint)
+{
+	Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->SetWorldRotation(FRotationMatrix::MakeFromXZ(*inImpactPoint - GetPawn()->GetActorLocation(), GetPawn()->GetActorUpVector()).ToQuat());
 }
 
 void APlayerCharacterController::drawForwardDebugLine()
@@ -144,10 +159,6 @@ void APlayerCharacterController::stopRunning()
 
 void APlayerCharacterController::fire()
 {
-	FActorSpawnParameters spawnParams;
-	spawnParams.Owner = Cast<APlayerCharacter>(GetPawn());
-	spawnParams.Instigator = GetInstigator();
-
 	FVector projectileSpawnLoc = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetForwardVector();
 	projectileSpawnLoc.Normalize();
 	projectileSpawnLoc *= 2;
@@ -155,14 +166,43 @@ void APlayerCharacterController::fire()
 
 	FRotator projectileSpawnRot = Cast<APlayerCharacter>(GetPawn())->GetMeshComponent()->GetComponentRotation();
 
-	if(!GetWorld()->IsServer())
-		Server_Fire(projectileSpawnLoc, projectileSpawnRot);
+	if (GetWorld()->IsServer())
+		spawnProjectile(&projectileSpawnLoc, &projectileSpawnRot);
 	else
 	{
-		AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileSpawnLoc, projectileSpawnRot, spawnParams);
-		projectile->setPlanet(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
-		projectile->PrimaryActorTick.SetTickFunctionEnable(true);
+		Server_Fire(projectileSpawnLoc, projectileSpawnRot);
+		//Multi_Fire(projectileSpawnLoc, projectileSpawnRot);
 	}
+}
+
+void APlayerCharacterController::spawnProjectile(FVector * projectileLocation, FRotator * projectileRotation)
+{
+	FActorSpawnParameters spawnParams;
+	spawnParams.Owner = Cast<APlayerCharacter>(GetPawn());
+	spawnParams.Instigator = GetInstigator();
+	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), *projectileLocation, *projectileRotation, spawnParams);
+	projectile->setPlanet(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
+	projectile->PrimaryActorTick.SetTickFunctionEnable(true);
+}
+
+bool APlayerCharacterController::Server_FaceCursorLocation_Validate(FVector inImpactPoint)
+{
+	return true;
+}
+
+void APlayerCharacterController::Server_FaceCursorLocation_Implementation(FVector inImpactPoint)
+{
+	setToFaceCursorLocation(&inImpactPoint);
+}
+
+bool APlayerCharacterController::Multi_FaceCursorLocation_Validate(FVector inImpactPoint)
+{
+	return true;
+}
+
+void APlayerCharacterController::Multi_FaceCursorLocation_Implementation(FVector inImpactPoint)
+{
+	setToFaceCursorLocation(&inImpactPoint);
 }
 
 bool APlayerCharacterController::Server_Fire_Validate(FVector projectileLocation, FRotator projectileRotation)
@@ -172,12 +212,7 @@ bool APlayerCharacterController::Server_Fire_Validate(FVector projectileLocation
 
 void APlayerCharacterController::Server_Fire_Implementation(FVector projectileLocation, FRotator projectileRotation)
 {
-	FActorSpawnParameters spawnParams;
-	spawnParams.Owner = Cast<APlayerCharacter>(GetPawn());
-	spawnParams.Instigator = GetInstigator();
-	AProjectile* projectile = GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), projectileLocation, projectileRotation, spawnParams);
-	projectile->setPlanet(Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planet, Cast<APlayerCharacter>(GetPawn())->GetGravityBody()->planetAttractor);
-	projectile->PrimaryActorTick.SetTickFunctionEnable(true);
+	spawnProjectile(&projectileLocation, &projectileRotation);
 }
 
 void APlayerCharacterController::moveForward(float inputAxis)

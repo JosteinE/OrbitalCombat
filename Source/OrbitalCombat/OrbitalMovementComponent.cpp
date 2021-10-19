@@ -30,7 +30,6 @@ void UOrbitalMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	// Rotate mesh to face surface
 	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->rotateToSurface();
-
 	// Pull mesh towards the main planet, also detecting collision
 	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->pullToSurface(DeltaTime, &bGrounded);
 }
@@ -48,12 +47,24 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 
 	//UE_LOG(LogTemp, Warning, TEXT("MoveDirection { %f, %f, %f }"), moveDirection.X, moveDirection.Y, moveDirection.Z);
 	//GetPawnOwner()->AddMovementInput(moveDirection, moveSpeed, true);
+	
 	if (GetWorld()->IsServer())
-		GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
+	{
+		// Host moves
+		MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
+	}
 	else
 	{
+		// Remote client moves and sends the transformation to the server
 		Server_MoveCharacter(moveDirection, moveSpeed, deltaTime);
+		// Broadcasted movement to all remote clients
+		Multi_MoveCharacter(moveDirection, moveSpeed, deltaTime);
 	}
+}
+
+void UOrbitalMovementComponent::MoveCharacter(FVector * moveDirection, float * inMoveSpeed, float * deltaTime)
+{
+	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + (*moveDirection) * (*inMoveSpeed) * (*deltaTime), false);
 }
 
 bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)
@@ -63,7 +74,17 @@ bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirect
 
 void UOrbitalMovementComponent::Server_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
 {
-	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * moveSpeed * deltaTime, false);
+	MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
+}
+
+bool UOrbitalMovementComponent::Multi_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Multi_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
+{
+	MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
 }
 
 void UOrbitalMovementComponent::jump()
