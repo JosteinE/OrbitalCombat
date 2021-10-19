@@ -21,8 +21,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float gravity = 5.f;
 
-	void RotateToSurface(AActor* body);
+	FRotator GetRotateToSurface(AActor* body);
 	void RotateMeshToSurface(UStaticMeshComponent * mesh);
-	void Attract(AActor * body, float deltaTime, bool *bGrounded = nullptr);
+	FVector GetAttract(AActor * body, float deltaTime);
 	void AttractMesh(UStaticMeshComponent * mesh, float deltaTime, bool *bGrounded = nullptr);
 };

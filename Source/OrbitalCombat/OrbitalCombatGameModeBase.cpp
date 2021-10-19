@@ -90,6 +90,6 @@ APlayerCharacter* AOrbitalCombatGameModeBase::addPlayer()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		APlayerCharacter* newPlayer = World->SpawnActor<APlayerCharacter>(pawnClass, planet->GetActorLocation() + playerSpawnOffset, FRotator{0,0,0}, SpawnParams);
+		APlayerCharacter* newPlayer = World->SpawnActor<APlayerCharacter>(pawnClass, planet->GetActorLocation() + playerSpawnOffset, FRotator{ 0,0,0 }, SpawnParams);
 		return newPlayer;
 }

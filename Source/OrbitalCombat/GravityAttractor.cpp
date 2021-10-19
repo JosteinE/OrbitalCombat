@@ -9,17 +9,15 @@
 
 UGravityAttractor::UGravityAttractor()
 {
-	PrimaryComponentTick.bCanEverTick = true;
-	PrimaryComponentTick.bStartWithTickEnabled = true;
+	//PrimaryComponentTick.bCanEverTick = true;
+	//PrimaryComponentTick.bStartWithTickEnabled = true;
 }
 
-void UGravityAttractor::RotateToSurface(AActor* body)
+FRotator UGravityAttractor::GetRotateToSurface(AActor* body)
 {
 	FRotator newRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), body->GetActorLocation());
 	FVector newForwardVector = UKismetMathLibrary::GetForwardVector(newRotation);
-	UKismetMathLibrary::MakeRotFromZX(newForwardVector, body->GetActorForwardVector());
-
-	body->SetActorRotation(UKismetMathLibrary::MakeRotFromZX(newForwardVector, body->GetActorForwardVector()));
+	return UKismetMathLibrary::MakeRotFromZX(newForwardVector, body->GetActorForwardVector());
 }
 
 void UGravityAttractor::RotateMeshToSurface(UStaticMeshComponent * mesh)
@@ -31,29 +29,11 @@ void UGravityAttractor::RotateMeshToSurface(UStaticMeshComponent * mesh)
 	mesh->SetRelativeRotation(UKismetMathLibrary::MakeRotFromZX(newForwardVector, mesh->GetForwardVector()));
 }
 
-void UGravityAttractor::Attract(AActor * body, float deltaTime, bool *bGrounded)
+FVector UGravityAttractor::GetAttract(AActor * body, float deltaTime)
 {
 	FVector pullDirection{ -body->GetActorUpVector() };
 	pullDirection.Normalize();
-
-	if (bGrounded != nullptr)
-	{
-		FHitResult bColliding; // To log the hit result
-		body->SetActorLocation(body->GetActorLocation() + pullDirection * gravity, true, &bColliding);
-
-		if (bColliding.bBlockingHit)
-		{
-			*bGrounded = true;
-		}
-		else
-		{
-			*bGrounded = false;
-		}
-	}
-	else
-	{
-		body->SetActorLocation(body->GetActorLocation() + pullDirection * gravity, true);
-	}
+	return body->GetActorLocation() + pullDirection * gravity;
 }
 
 void UGravityAttractor::AttractMesh(UStaticMeshComponent * mesh, float deltaTime, bool *bGrounded)

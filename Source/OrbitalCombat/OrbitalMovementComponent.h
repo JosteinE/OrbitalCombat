@@ -33,7 +33,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void inputToMovement(FVector input, bool bJumping, float deltaTime);
 
-	void MoveCharacter(FVector* moveDirection, float* inMoveSpeed, float* deltaTime);
+	void MoveCharacter(FVector moveDirection, float inMoveSpeed, float deltaTime);
+	void RotateToSurface();
+	void PullToSurface(float deltaTime);
 
 	UFUNCTION(Server, Reliable, WithValidation)
 	void Server_MoveCharacter(FVector moveDirection, float inMoveSpeed, float deltaTime);
@@ -44,6 +46,26 @@ public:
 	void Multi_MoveCharacter(FVector moveDirection, float inMoveSpeed, float deltaTime);
 	bool Multi_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime);
 	void Multi_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime);
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void Server_RotateToSurface();
+	bool Server_RotateToSurface_Validate();
+	void Server_RotateToSurface_Implementation();
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	void Multi_RotateToSurface();
+	bool Multi_RotateToSurface_Validate();
+	void Multi_RotateToSurface_Implementation();
+
+	UFUNCTION(Client, Reliable, WithValidation)
+	void Server_PullToSurface(float deltaTime);
+	bool Server_PullToSurface_Validate(float deltaTime);
+	void Server_PullToSurface_Implementation(float deltaTime);
+
+	UFUNCTION(NetMulticast, Reliable, WithValidation)
+	void Multi_PullToSurface(float deltaTime);
+	bool Multi_PullToSurface_Validate(float deltaTime);
+	void Multi_PullToSurface_Implementation(float deltaTime);
 
 	void jump();
 };

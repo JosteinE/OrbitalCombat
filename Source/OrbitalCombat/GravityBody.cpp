@@ -64,49 +64,14 @@ void UGravityBody::setPlanetToOrbit(AActor * inPlanet, UGravityAttractor* gravit
 		UE_LOG(LogTemp, Warning, TEXT("Attempted to assign a nullptr as planet in a GravityBody component."));
 }
 
-void UGravityBody::rotateToSurface()
+FRotator UGravityBody::rotateToSurface()
 {
-	if (GetWorld()->IsServer())
-	{
-		planetAttractor->RotateToSurface(GetOwner());
-	}
-	else
-	{
-		Client_RotateToSurface();
-	}
+	return planetAttractor->GetRotateToSurface(GetOwner());
 }
 
-void UGravityBody::pullToSurface(float deltaTime, bool * bGrounded)
+FVector UGravityBody::pullToSurface(float deltaTime)
 {
-	// Temp removed bGrounded from functions. RPC calls cant have ptrs
-	if (GetWorld()->IsServer())
-	{
-		planetAttractor->Attract(GetOwner(), deltaTime);
-	}
-	else
-	{
-		Client_PullToSurface(deltaTime);
-	}
-}
-
-bool UGravityBody::Client_RotateToSurface_Validate()
-{
-	return true;
-}
-
-void UGravityBody::Client_RotateToSurface_Implementation()
-{
-	planetAttractor->RotateToSurface(GetOwner());
-}
-
-bool UGravityBody::Client_PullToSurface_Validate(float deltaTime)
-{
-	return true;
-}
-
-void UGravityBody::Client_PullToSurface_Implementation(float deltaTime)
-{
-	planetAttractor->Attract(GetOwner(), deltaTime);
+	return planetAttractor->GetAttract(GetOwner(), deltaTime);
 }
 
 void UGravityBody::rotateMeshToSurface()

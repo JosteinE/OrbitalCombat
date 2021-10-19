@@ -28,10 +28,20 @@ void UOrbitalMovementComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// Rotate mesh to face surface
-	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->rotateToSurface();
-	// Pull mesh towards the main planet, also detecting collision
-	Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->pullToSurface(DeltaTime, &bGrounded);
+	if (GetWorld()->IsServer())
+	{
+		RotateToSurface();			// Rotate mesh to face surface
+		PullToSurface(DeltaTime);	// Pull mesh towards the main planet, also detecting collision
+	}
+	else
+	{
+		Server_RotateToSurface();
+		Multi_RotateToSurface();
+
+		Server_PullToSurface(DeltaTime);
+		Multi_PullToSurface(DeltaTime);
+	}
+
 }
 
 void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, float deltaTime)
@@ -51,7 +61,7 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 	if (GetWorld()->IsServer())
 	{
 		// Host moves
-		MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
+		MoveCharacter(moveDirection, moveSpeed, deltaTime);
 	}
 	else
 	{
@@ -62,9 +72,21 @@ void UOrbitalMovementComponent::inputToMovement(FVector input, bool bJumping, fl
 	}
 }
 
-void UOrbitalMovementComponent::MoveCharacter(FVector * moveDirection, float * inMoveSpeed, float * deltaTime)
+void UOrbitalMovementComponent::MoveCharacter(FVector moveDirection, float inMoveSpeed, float deltaTime)
 {
-	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + (*moveDirection) * (*inMoveSpeed) * (*deltaTime), false);
+	GetPawnOwner()->SetActorLocation(GetPawnOwner()->GetActorLocation() + moveDirection * inMoveSpeed * deltaTime, false);
+}
+
+void UOrbitalMovementComponent::RotateToSurface()
+{
+	GetPawnOwner()->SetActorRotation(Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->rotateToSurface());
+}
+
+void UOrbitalMovementComponent::PullToSurface(float deltaTime)
+{
+	FHitResult bColliding; // To log the hit result
+	GetPawnOwner()->SetActorLocation(Cast<APlayerCharacter>(GetPawnOwner())->GetGravityBody()->pullToSurface(deltaTime), true, &bColliding);
+	bGrounded = bColliding.bBlockingHit;
 }
 
 bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)
@@ -74,7 +96,7 @@ bool UOrbitalMovementComponent::Server_MoveCharacter_Validate(FVector moveDirect
 
 void UOrbitalMovementComponent::Server_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
 {
-	MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
+	MoveCharacter(moveDirection, moveSpeed, deltaTime);
 }
 
 bool UOrbitalMovementComponent::Multi_MoveCharacter_Validate(FVector moveDirection, float inMoveSpeed, float deltaTime)
@@ -84,7 +106,47 @@ bool UOrbitalMovementComponent::Multi_MoveCharacter_Validate(FVector moveDirecti
 
 void UOrbitalMovementComponent::Multi_MoveCharacter_Implementation(FVector moveDirection, float inMoveSpeed, float deltaTime)
 {
-	MoveCharacter(&moveDirection, &moveSpeed, &deltaTime);
+	MoveCharacter(moveDirection, moveSpeed, deltaTime);
+}
+
+bool UOrbitalMovementComponent::Server_RotateToSurface_Validate()
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Server_RotateToSurface_Implementation()
+{
+	RotateToSurface();
+}
+
+bool UOrbitalMovementComponent::Multi_RotateToSurface_Validate()
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Multi_RotateToSurface_Implementation()
+{
+	RotateToSurface();
+}
+
+bool UOrbitalMovementComponent::Server_PullToSurface_Validate(float deltaTime)
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Server_PullToSurface_Implementation(float deltaTime)
+{
+	PullToSurface(deltaTime);
+}
+
+bool UOrbitalMovementComponent::Multi_PullToSurface_Validate(float deltaTime)
+{
+	return true;
+}
+
+void UOrbitalMovementComponent::Multi_PullToSurface_Implementation(float deltaTime)
+{
+	PullToSurface(deltaTime);
 }
 
 void UOrbitalMovementComponent::jump()

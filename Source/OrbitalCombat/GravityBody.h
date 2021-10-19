@@ -30,32 +30,8 @@ public:
 	UGravityAttractor* planetAttractor{ nullptr };
 
 	void setPlanetToOrbit(AActor *inPlanet, UGravityAttractor* gravityAttractor);
-	void rotateToSurface();
-	void pullToSurface(float deltaTime, bool * bGrounded = nullptr);
-
-	UFUNCTION(Client, Reliable, WithValidation)
-	void Client_RotateToSurface();
-	bool Client_RotateToSurface_Validate();
-	void Client_RotateToSurface_Implementation();
-
-	//UFUNCTION(NetMulticast, Reliable, WithValidation)
-	//void Multi_RotateToSurface();
-	//bool Multi_RotateToSurface_Validate();
-	//void Multi_RotateToSurface_Implementation();
-
-	UFUNCTION(Client, Reliable, WithValidation)
-	void Client_PullToSurface(float deltaTime);
-	bool Client_PullToSurface_Validate(float deltaTime);
-	void Client_PullToSurface_Implementation(float deltaTime);
-
-	//UFUNCTION(NetMulticast, Reliable, WithValidation)
-	//void Multi_PullToSurface(float deltaTime);
-	//bool Multi_PullToSurface_Validate(float deltaTime);
-	//void Multi_PullToSurface_Implementation(float deltaTime);
-
-
-
-
+	FRotator rotateToSurface();
+	FVector pullToSurface(float deltaTime);
 	void rotateMeshToSurface();
 	void pullMeshToSurface(float deltaTime, bool * bGrounded = nullptr); //Applies gravity
 };
